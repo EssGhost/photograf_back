@@ -4,6 +4,14 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { AdminsModule } from './admins/admins.module';
+import { ContractsModule } from './contracts/contracts.module';
+import { GroupsModule } from './groups/groups.module';
+import { ModelsModule } from './models/models.module';
+import { PhotosModule } from './photos/photos.module';
+import { CourtesiesByUserModule } from './courtesies_by_user/courtesies_by_user.module';
+import { CourtesiesByGroupModule } from './courtesies_by_group/courtesies_by_group.module';
+import { CourtesiesModule } from './courtesies/courtesies.module';
 
 @Module({
   
@@ -17,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
       database: 'photograf',
       autoLoadEntities: true,
       synchronize: true,}),
-    UsersModule, AuthModule],
+    UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule],
   controllers: [AppController],
   providers: [AppService],
 })

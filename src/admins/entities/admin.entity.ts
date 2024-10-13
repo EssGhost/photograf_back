@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class users {
+export class admins {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -10,7 +10,7 @@ export class users {
 
     @Column()
     lastname1: string;
-
+    
     @Column()
     lastname2: string;
 
@@ -18,22 +18,14 @@ export class users {
     email: string;
 
     @Column()
-    phone: string;
+    username: string;
 
     @Column()
-    tag: boolean;
+    password: string;
 
     @Column()
-    instagram: string;
-
-    @Column()
-    facebook: string;
-
-    @Column('float')
-    toga: number;
-
-    @Column()
-    status: boolean;
+    sucursal: number;
 
     //@foreign key
+
 }
