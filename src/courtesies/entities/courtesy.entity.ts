@@ -1,1 +1,10 @@
-export class courtesies {}
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
+export class courtesies {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+}
