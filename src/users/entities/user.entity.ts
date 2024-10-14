@@ -32,7 +32,7 @@ export class users {
     @Column('float')
     toga: number;
 
-    @Column()
+    @Column({ default: true })
     status: boolean;
 
     //@foreign key
