@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { courtesies_by_group } from "src/courtesies_by_group/entities/courtesies_by_group.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class courtesies {
@@ -7,4 +8,7 @@ export class courtesies {
 
     @Column()
     name: string;
+
+    @OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.id_courtesies)
+    courtesie_by_group: courtesies_by_group[];
 }

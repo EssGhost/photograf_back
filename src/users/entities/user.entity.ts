@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { contracts } from "src/contracts/entities/contract.entity";
+import { courtesies_by_user } from "src/courtesies_by_user/entities/courtesies_by_user.entity";
+import { groups } from "src/groups/entities/group.entity";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class users {
@@ -35,5 +38,13 @@ export class users {
     @Column({ default: true })
     status: boolean;
 
-    //@foreign key
+    @ManyToOne(() => groups, group => group.user)
+    id_group: groups;
+
+    @OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_user)
+    courtesie_by_user: courtesies_by_user[];
+
+    @OneToOne(() => contracts, contract => contract.id_user)
+    contract: contracts;
+
 }

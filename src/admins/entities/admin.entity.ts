@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { groups } from "src/groups/entities/group.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class admins {
@@ -26,6 +27,7 @@ export class admins {
     @Column()
     sucursal: number;
 
-    //@foreign key
+    @OneToMany(() => groups, group => group.registered_by)
+    group: groups[];
 
 }

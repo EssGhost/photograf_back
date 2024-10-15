@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { groups } from "src/groups/entities/group.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class photos {
@@ -11,6 +12,6 @@ export class photos {
     @Column()
     photo: string;
 
-    //Foreign Key
-    //id_group
+    @ManyToOne(() => groups, group => group.photo)
+    id_group: groups;
 }

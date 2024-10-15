@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { models } from "src/models/entities/model.entity";
+import { users } from "src/users/entities/user.entity";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class contracts {
@@ -24,7 +26,7 @@ export class contracts {
     convencional: boolean;
     
     @Column()
-    specification: boolean;
+    specification: string;
     
     @Column()
     txt1: string;
@@ -41,6 +43,9 @@ export class contracts {
     @Column({ default: true })
     status: boolean;
 
-    //Foreign key
-    //id_model && id_user
+    @OneToOne(() => users, user => user.contract)
+    id_user: users;
+
+    @ManyToOne(() => models, model => model.contract)
+    id_model: models;
 }
