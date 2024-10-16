@@ -4,7 +4,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { users } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +35,10 @@ export class UsersService {
   findOneByEmail(email: string) {
     return this.userRepository.findOneBy({ email });
   }
+
+  // findOneByUsername(username: string) {
+  //   return this.userRepository.findOneBy({ username });
+  // }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;

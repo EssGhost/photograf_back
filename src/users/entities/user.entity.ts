@@ -1,5 +1,6 @@
 import { contracts } from "src/contracts/entities/contract.entity";
 import { courtesies_by_user } from "src/courtesies_by_user/entities/courtesies_by_user.entity";
+import { credentials } from "src/credentials/entities/credential.entity";
 import { groups } from "src/groups/entities/group.entity";
 import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -46,5 +47,8 @@ export class users {
 
     @OneToOne(() => contracts, contract => contract.id_user)
     contract: contracts;
+    
+    @OneToOne(() => credentials, credential => credential.id_user)
+    credential: credentials;
 
 }

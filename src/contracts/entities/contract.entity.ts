@@ -15,6 +15,9 @@ export class contracts {
     
     @Column()
     ampliación: boolean;
+
+    @Column()
+    agradecimiento: boolean;
     
     @Column()
     individual: boolean;

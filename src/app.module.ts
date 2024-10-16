@@ -12,6 +12,7 @@ import { PhotosModule } from './photos/photos.module';
 import { CourtesiesByUserModule } from './courtesies_by_user/courtesies_by_user.module';
 import { CourtesiesByGroupModule } from './courtesies_by_group/courtesies_by_group.module';
 import { CourtesiesModule } from './courtesies/courtesies.module';
+import { CredentialsModule } from './credentials/credentials.module';
 
 @Module({
   
@@ -25,7 +26,7 @@ import { CourtesiesModule } from './courtesies/courtesies.module';
       database: 'photograf',
       autoLoadEntities: true,
       synchronize: true,}),
-    UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule],
+    UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule, CredentialsModule],
   controllers: [AppController],
   providers: [AppService],
 })
