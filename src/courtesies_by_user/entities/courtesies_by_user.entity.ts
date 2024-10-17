@@ -8,9 +8,9 @@ export class courtesies_by_user {
     id: number;
     
     @ManyToOne(() => users, user => user.courtesie_by_user)
-    id_user: users;
+    user: users;
 
     @ManyToOne(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.courtesie_by_user)
-    id_cbg: courtesies_by_group;
+    cbg: courtesies_by_group;
 
 }

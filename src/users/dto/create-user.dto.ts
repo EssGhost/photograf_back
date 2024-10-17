@@ -1,5 +1,8 @@
-import { Transform } from "class-transformer";
-import { IsBoolean, IsEmail, IsPositive, IsString, MinLength } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsBoolean, IsEmail, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { contracts } from "src/contracts/entities/contract.entity";
+import { credentials } from "src/credentials/entities/credential.entity";
+import { groups } from "src/groups/entities/group.entity";
 
 export class CreateUserDto {
     @Transform(({ value }) => value.trim())
@@ -44,5 +47,22 @@ export class CreateUserDto {
     @IsPositive()
     toga: number;
 
-    //status: boolean;
+    @IsBoolean()
+    status: boolean;
+
+    @IsNumber()
+    @IsPositive()
+    @Type(() => Number )
+    group: groups;
+
+    @IsNumber()
+    @IsPositive()
+    @Type(() => Number )
+    contract: contracts;
+
+    @IsNumber()
+    @IsPositive()
+    @Type(() => Number )
+    credential: credentials;
+
 }

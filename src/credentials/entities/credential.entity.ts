@@ -1,5 +1,5 @@
 import { users } from "src/users/entities/user.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class credentials {
@@ -13,5 +13,6 @@ export class credentials {
     password: string;
 
     @OneToOne(() => users, user => user.credential)
-    id_user: users;
+    @JoinColumn()
+    user: users;
 }

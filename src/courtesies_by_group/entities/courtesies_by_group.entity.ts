@@ -9,11 +9,11 @@ export class courtesies_by_group {
     id: number;
 
     @ManyToOne(() => groups, group => group.courtesie_by_group)
-    id_group: groups;
+    group: groups;
 
     @ManyToOne(() => courtesies, courtesie => courtesie.courtesie_by_group)
-    id_courtesies: courtesies;
+    courtesies: courtesies;
 
-    @OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_cbg)
+    @OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.cbg)
     courtesie_by_user: courtesies_by_user[];
 }

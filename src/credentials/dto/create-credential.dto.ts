@@ -1,5 +1,6 @@
-import { Transform } from "class-transformer";
-import { IsString, MinLength } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { users } from "src/users/entities/user.entity";
 
 export class CreateCredentialDto {
     @Transform(({value}) => value.trim())
@@ -11,4 +12,9 @@ export class CreateCredentialDto {
     @IsString()
     @MinLength(8)
     password: string;
+    
+    @IsNumber()
+    @IsPositive()
+    @Type(() => Number )
+    user: users;
 }

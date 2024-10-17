@@ -3,9 +3,10 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { AdminsModule } from 'src/admins/admins.module';
+import { CredentialsModule } from 'src/credentials/credentials.module';
 
 @Module({
-  imports : [UsersModule, AdminsModule ],
+  imports : [UsersModule, AdminsModule, CredentialsModule],
   controllers: [AuthController],
   providers: [AuthService]
 })

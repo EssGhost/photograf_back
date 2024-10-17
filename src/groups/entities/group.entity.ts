@@ -28,14 +28,14 @@ export class groups {
     status: boolean;
 
     @ManyToOne(() => admins, admin => admin.group)
-    registered_by: admins;
+    admin: admins;
 
-    @OneToMany(() => users, user => user.id_group)
+    @OneToMany(() => users, user => user.group)
     user: users[];
     
-    @OneToMany(() => photos, photo => photo.id_group)
+    @OneToMany(() => photos, photo => photo.group)
     photo: photos[];
     
-    @OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.id_group)
+    @OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.group)
     courtesie_by_group: courtesies_by_group[];
 }

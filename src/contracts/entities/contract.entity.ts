@@ -1,6 +1,6 @@
 import { models } from "src/models/entities/model.entity";
 import { users } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class contracts {
@@ -14,7 +14,7 @@ export class contracts {
     panoramica: boolean;
     
     @Column()
-    ampliación: boolean;
+    ampliacion: boolean;
 
     @Column()
     agradecimiento: boolean;
@@ -47,8 +47,9 @@ export class contracts {
     status: boolean;
 
     @OneToOne(() => users, user => user.contract)
-    id_user: users;
+    @JoinColumn()
+    user: users;
 
     @ManyToOne(() => models, model => model.contract)
-    id_model: models;
+    model: models;
 }

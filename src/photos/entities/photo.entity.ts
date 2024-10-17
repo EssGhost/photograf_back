@@ -13,5 +13,5 @@ export class photos {
     photo: string;
 
     @ManyToOne(() => groups, group => group.photo)
-    id_group: groups;
+    group: groups;
 }

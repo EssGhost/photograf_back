@@ -27,7 +27,7 @@ export class admins {
     @Column()
     sucursal: number;
 
-    @OneToMany(() => groups, group => group.registered_by)
+    @OneToMany(() => groups, group => group.admin)
     group: groups[];
 
 }
