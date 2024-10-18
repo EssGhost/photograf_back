@@ -12,7 +12,7 @@ export class models {
     @Column()
     color: string;
 
-    @OneToMany(() => contracts, contract => contract.id_model)
-    contract: contracts[];
+    //@OneToMany(() => contracts, contract => contract.id_model)
+    //contract: contracts[];
 
 }

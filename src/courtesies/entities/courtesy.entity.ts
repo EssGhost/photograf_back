@@ -9,6 +9,6 @@ export class courtesies {
     @Column()
     name: string;
 
-    @OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.id_courtesies)
-    courtesie_by_group: courtesies_by_group[];
+    //@OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.id_courtesies)
+    //courtesie_by_group: courtesies_by_group[];
 }

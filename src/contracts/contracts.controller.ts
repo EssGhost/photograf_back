@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
@@ -7,7 +7,7 @@ import { UpdateContractDto } from './dto/update-contract.dto';
 export class ContractsController {
   constructor(private readonly contractsService: ContractsService) {}
 
-  @Post()
+  @Post('upload')
   create(@Body() createContractDto: CreateContractDto) {
     return this.contractsService.create(createContractDto);
   }
@@ -20,6 +20,12 @@ export class ContractsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.contractsService.findOne(+id);
+  }
+
+
+  @Get('/search')
+  search(@Query('query')query:string){
+    return this.contractsService.search(query);
   }
 
   @Patch(':id')

@@ -41,10 +41,10 @@ export class users {
     @ManyToOne(() => groups, group => group.user)
     id_group: groups;
 
-    @OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_user)
-    courtesie_by_user: courtesies_by_user[];
+    //@OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_user)
+    //courtesie_by_user: courtesies_by_user[];
 
-    @OneToOne(() => contracts, contract => contract.id_user)
-    contract: contracts;
+    //@OneToOne(() => contracts, contract => contract.id_user)
+    //contract: contracts;
 
 }

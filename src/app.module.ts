@@ -21,7 +21,7 @@ import { CourtesiesModule } from './courtesies/courtesies.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'gearsofwar',
+      password: 'Nolocbrodisculpa5',
       database: 'photograf',
       autoLoadEntities: true,
       synchronize: true,}),

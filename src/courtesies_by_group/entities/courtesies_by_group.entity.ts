@@ -11,9 +11,9 @@ export class courtesies_by_group {
     @ManyToOne(() => groups, group => group.courtesie_by_group)
     id_group: groups;
 
-    @ManyToOne(() => courtesies, courtesie => courtesie.courtesie_by_group)
-    id_courtesies: courtesies;
+    //@ManyToOne(() => courtesies, courtesie => courtesie.courtesie_by_group)
+    //id_courtesies: courtesies;
 
-    @OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_cbg)
-    courtesie_by_user: courtesies_by_user[];
+    //@OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_cbg)
+    //courtesie_by_user: courtesies_by_user[];
 }

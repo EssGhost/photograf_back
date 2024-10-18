@@ -7,10 +7,10 @@ export class courtesies_by_user {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => users, user => user.courtesie_by_user)
-    id_user: users;
+    //@ManyToOne(() => users, user => user.courtesie_by_user)
+    //id_user: users;
 
-    @ManyToOne(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.courtesie_by_user)
-    id_cbg: courtesies_by_group;
+    //@ManyToOne(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.courtesie_by_user)
+    //id_cbg: courtesies_by_group;
 
 }
