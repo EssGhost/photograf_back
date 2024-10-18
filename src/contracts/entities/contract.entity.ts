@@ -46,6 +46,6 @@ export class contracts {
     @OneToOne(() => users, user => user.contract)
     id_user: users;
 
-    @ManyToOne(() => models, model => model.contract)
-    id_model: models;
+   // @ManyToOne(() => models, model => model.contract)
+    //model: models;
 }
