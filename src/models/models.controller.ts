@@ -23,7 +23,10 @@ export class ModelsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateModelDto: UpdateModelDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateModelDto: UpdateModelDto,
+  ) {
     return this.modelsService.update(+id, updateModelDto);
   }
 

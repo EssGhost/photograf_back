@@ -53,7 +53,7 @@ export class ContractsService {
       const user = await this.contraRepo.preload({
         //preload precarga la info que ya esta en la bd
         id,
-        ...UpdateContractDto,
+        ...updateContractDto,
       });
       await this.contraRepo.save(user);
       return user;

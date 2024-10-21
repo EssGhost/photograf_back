@@ -29,8 +29,11 @@ export class ContractsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContractDto: UpdateContractDto) {
-    return this.contractsService.update(+id, updateContractDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateContractsDto: UpdateContractDto,
+  ) {
+    return this.contractsService.update(+id, updateContractsDto);
   }
 
   @Delete(':id')

@@ -28,7 +28,10 @@ export class CourtesiesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateCourtesyDto: UpdateCourtesyDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCourtesyDto: UpdateCourtesyDto,
+  ) {
     return this.courtesiesService.update(+id, updateCourtesyDto);
   }
 

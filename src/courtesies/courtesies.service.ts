@@ -53,7 +53,7 @@ export class CourtesiesService {
       const corte = await this.corteRepo.preload({
         //preload precarga la info que ya esta en la bd
         id,
-        ...UpdateCourtesyDto,
+        ...updateCourtesyDto,
       });
       await this.corteRepo.save(corte);
       return corte;

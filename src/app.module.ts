@@ -12,10 +12,15 @@ import { PhotosModule } from './photos/photos.module';
 import { CourtesiesByUserModule } from './courtesies_by_user/courtesies_by_user.module';
 import { CourtesiesByGroupModule } from './courtesies_by_group/courtesies_by_group.module';
 import { CourtesiesModule } from './courtesies/courtesies.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -25,7 +30,7 @@ import { CourtesiesModule } from './courtesies/courtesies.module';
       database: 'photograf',
       autoLoadEntities: true,
       synchronize: true,}),
-    UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule],
+    UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule, CloudinaryModule],
   controllers: [AppController],
   providers: [AppService],
 })
