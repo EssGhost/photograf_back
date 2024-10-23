@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { users } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,10 @@ export class UsersService {
     private readonly userRepository: Repository<users>
   ) {}
 
+  generateRandomPassword(): string {
+    const password = randomBytes(5).toString('hex');
+    return password;
+  }
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -29,7 +34,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOneBy({ id });
   }
 
   findOneByEmail(email: string) {

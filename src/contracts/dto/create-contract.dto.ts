@@ -52,16 +52,16 @@ export class CreateContractDto {
     @MinLength(2)
     dedicated2: string;
 
-    @IsBoolean()
-    status: boolean;
+    // @IsBoolean()
+    // status: boolean;
 
-    @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    user: users;
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => users )
+    // user: users;
     
-    @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    model: models;
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => models )
+    // model: models;
 }

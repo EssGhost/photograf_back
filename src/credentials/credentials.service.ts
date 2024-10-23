@@ -35,6 +35,10 @@ export class CredentialsService {
     return `This action returns a #${id} credential`;
   }
 
+  findOneByEmail(username: string) {
+    return this.credentialRepository.findOneBy({ username });
+  }
+
   update(id: number, updateCredentialDto: UpdateCredentialDto) {
     return `This action updates a #${id} credential`;
   }

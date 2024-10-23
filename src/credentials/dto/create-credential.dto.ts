@@ -15,6 +15,6 @@ export class CreateCredentialDto {
     
     @IsNumber()
     @IsPositive()
-    @Type(() => Number )
+    @Type(() => users)
     user: users;
 }

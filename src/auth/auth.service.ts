@@ -1,48 +1,47 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
-
-import { UsersService } from 'src/users/users.service';
+//service
 import { AdminsService } from 'src/admins/admins.service';
+import { UsersService } from 'src/users/users.service';
 import { CredentialsService } from '../credentials/credentials.service';
-
-import { LoginDto } from './dto/login.dto';
-//admin
+import { JwtService } from '@nestjs/jwt';
+//dto's
 import { CreateAdminDto } from '../admins/dto/create-admin.dto';
-//user
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { CreateContractDto } from '../contracts/dto/create-contract.dto';
-//credential
+import { CreateCredentialDto } from 'src/credentials/dto/create-credential.dto';
+import { LoginDto } from './dto/login.dto';
+
+
 
 @Injectable()
 export class AuthService {
 
     constructor(
+        private readonly jwtService : JwtService,
         private readonly adminService : AdminsService,
         private readonly userService : UsersService,
         private readonly credentialsService : CredentialsService,
         ){}
 
         /////  admins  /////
-        async registerAdmin(CreateAdminDto : CreateAdminDto){
-            const admin = await this.adminService.findOneByEmail(CreateAdminDto.email)
-            const admin2 = await this.adminService.findOneByUsername(CreateAdminDto.username)
+        async registerAdmin(createAdminDto : CreateAdminDto){
+            const admin = await this.adminService.findOneByEmail(createAdminDto.email)
+            const admin2 = await this.adminService.findOneByUsername(createAdminDto.username)
             
             if (admin) {
                 throw new BadRequestException('Email already in use');
             } else if (admin2) {
                 throw new BadRequestException('Username already in use');
             }
-
-    
+            
             return await this.adminService.create({
-                name : CreateAdminDto.name,
-                lastname1 : CreateAdminDto.lastname1,
-                lastname2 : CreateAdminDto.lastname2,
-                email : CreateAdminDto.email,
-                username : CreateAdminDto.username,
-                password : await bcrypt.hash(CreateAdminDto.password, 10),
-                sucursal : CreateAdminDto.sucursal,
+                name : createAdminDto.name,
+                lastname1 : createAdminDto.lastname1,
+                lastname2 : createAdminDto.lastname2,
+                email : createAdminDto.email,
+                username : createAdminDto.username,
+                password : await bcrypt.hash(createAdminDto.password, 10),
+                sucursal : createAdminDto.sucursal,
             });
         }
     
@@ -52,62 +51,69 @@ export class AuthService {
             if (!admin) {
                 throw new UnauthorizedException('Username incorrect');
             }
-    
+
             const isPasswordValid = await bcrypt.compare(loginDto.password, admin.password);
             
             if (!isPasswordValid) {
                 throw new UnauthorizedException('Password incorrect');
             }
-    
             return admin;
         }
 
 
 
         /////  users  /////
-    // async registerUser(CreateUserDto : CreateUserDto){
-    //     const user = await this.userService.findOneByEmail(CreateUserDto.email)
+    async registerUser(createUserDto : CreateUserDto){
+        const user = await this.userService.findOneByEmail(createUserDto.email)
         
-    //     if (user) {
-    //         throw new BadRequestException('Email already in use');
-    //     }
+        if (user) {
+            throw new BadRequestException('Email already in use');
+        }
 
-    //     return await this.userService.create({
-    //         name : CreateUserDto.name,
-    //         lastname1 : CreateUserDto.lastname1,
-    //         lastname2 : CreateUserDto.lastname2,
-    //         email : CreateUserDto.email,
-    //         phone : CreateUserDto.phone,
-    //         tag : CreateUserDto.tag,
-    //         instagram : CreateUserDto.instagram,
-    //         facebook : CreateUserDto.facebook,
-    //         toga : CreateUserDto.toga,
-    //     });
-    // }
+        const newUser = await this.userService.create({
+            name : createUserDto.name,
+            lastname1 : createUserDto.lastname1,
+            lastname2 : createUserDto.lastname2,
+            email : createUserDto.email,
+            phone : createUserDto.phone,
+            tag : createUserDto.tag,
+            instagram : createUserDto.instagram,
+            facebook : createUserDto.facebook,
+            toga : createUserDto.toga,
+            // group : CreateUserDto.group,
+        });
 
-    // async registerContract(CreateContractDto : CreateContractDto){
+        const username = `${newUser.name}${newUser.id}`;
+
+        const rawPassword = this.userService.generateRandomPassword();
+
+        const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+        await this.credentialsService.create({
+            username,
+            password : hashedPassword,
+            user : newUser
+        });
+
+        const payload = { userId: newUser.id };
+        const token = await this.jwtService.signAsync(payload);
+
+        return { token, newUser, payload };
+    }
+
+    async loginUser(CreateCredentialDto : CreateCredentialDto){
+        const credential = await this.credentialsService.findOneByEmail(CreateCredentialDto.username);
         
-    // }
+        if (!credential) {
+            throw new UnauthorizedException('Email incorrect');
+        }
 
-
-
-
-
-
-    // async loginUser(loginDto : LoginDto){
-    //     const user = await this.userService.findOneByEmail(loginDto.email);
+        const isPasswordValid = await bcrypt.compare(CreateCredentialDto.password, credential.password);
         
-    //     if (!user) {
-    //         throw new UnauthorizedException('Email incorrect');
-    //     }
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Password incorrect');
+        }
 
-    //     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-        
-    //     if (!isPasswordValid) {
-    //         throw new UnauthorizedException('Password incorrect');
-    //     }
-
-    //     return user;
-    // }
-
+        return credential;
+    }
 }

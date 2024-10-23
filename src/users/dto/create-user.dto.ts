@@ -42,27 +42,26 @@ export class CreateUserDto {
     facebook: string;
 
     @Transform(({ value }) => value.trim())
-    @Transform(({ value }) => parseFloat(value))
+    //@Transform(({ value }) => parseFloat(value))
     @MinLength(0)
-    @IsPositive()
+    //@IsPositive()
     toga: number;
 
-    @IsBoolean()
-    status: boolean;
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => Number )
+    // group: groups;
 
-    @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    group: groups;
+    // @IsBoolean()
+    // status: boolean;
 
-    @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    contract: contracts;
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => Number )
+    // contract: contracts;
 
-    @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    credential: credentials;
-
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => Number )
+    // credential: credentials;
 }

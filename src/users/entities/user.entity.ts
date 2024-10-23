@@ -50,5 +50,4 @@ export class users {
     
     @OneToOne(() => credentials, credential => credential.user)
     credential: credentials;
-
 }
