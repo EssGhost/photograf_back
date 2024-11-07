@@ -34,7 +34,7 @@ export class AuthService {
                 throw new BadRequestException('Username already in use');
             }
             
-            return await this.adminService.create({
+            const newAdmin = await this.adminService.create({
                 name : createAdminDto.name,
                 lastname1 : createAdminDto.lastname1,
                 lastname2 : createAdminDto.lastname2,
@@ -43,8 +43,14 @@ export class AuthService {
                 password : await bcrypt.hash(createAdminDto.password, 10),
                 sucursal : createAdminDto.sucursal,
             });
+
+            const payload = { email: newAdmin.email, role: newAdmin.role };
+            const token = await this.jwtService.signAsync(payload);
+            const { password, ...adminWithoutPassword } = newAdmin;
+
+            return { adminWithoutPassword, token, payload };
         }
-    
+
         async loginAdmin(loginDto : LoginDto){
             const admin = await this.adminService.findOneByUsername(loginDto.username);
             
@@ -95,25 +101,33 @@ export class AuthService {
             user : newUser
         });
 
-        const payload = { userId: newUser.id };
+        const payload = { email: newUser.email, role: newUser.role };
         const token = await this.jwtService.signAsync(payload);
 
         return { token, newUser, payload };
     }
 
-    async loginUser(CreateCredentialDto : CreateCredentialDto){
-        const credential = await this.credentialsService.findOneByEmail(CreateCredentialDto.username);
+    async loginUser(loginDto : LoginDto){
+        const credential = await this.credentialsService.findOneByUsername(loginDto.username);
         
         if (!credential) {
-            throw new UnauthorizedException('Email incorrect');
+            throw new UnauthorizedException('Username incorrect');
         }
 
-        const isPasswordValid = await bcrypt.compare(CreateCredentialDto.password, credential.password);
+        const isPasswordValid = await bcrypt.compare(loginDto.password, credential.password);
         
         if (!isPasswordValid) {
             throw new UnauthorizedException('Password incorrect');
         }
 
         return credential;
+    }
+
+    async profile({ email, role }: { email: string; role: string }) {
+        return await this.userService.findOneByEmail(email);
+    }
+    
+    async profile2({ email, role }: { email: string; role: string }) {
+        return await this.adminService.findOneByEmail(email);
     }
 }

@@ -35,7 +35,7 @@ export class CredentialsService {
     return `This action returns a #${id} credential`;
   }
 
-  findOneByEmail(username: string) {
+  findOneByUsername(username: string) {
     return this.credentialRepository.findOneBy({ username });
   }
 

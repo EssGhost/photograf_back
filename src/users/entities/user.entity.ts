@@ -39,6 +39,9 @@ export class users {
     @Column({ default: true })
     status: boolean;
 
+    @Column( {default: 'user'} )
+    role : string;
+
     @ManyToOne(() => groups, group => group.user)
     group: groups;
 

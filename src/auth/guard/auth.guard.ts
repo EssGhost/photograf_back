@@ -13,14 +13,14 @@ export class AuthGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException('Authorization header not found'); // Si no hay token
+      throw new UnauthorizedException('Authorization header not found');
     }
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstant.secret,
       });
-      request.user = payload; // Adjuntar el payload al request para uso posterior
+      request.user = payload; 
     } catch (error) {
       throw new UnauthorizedException('Invalid or expired token');
     }

@@ -27,6 +27,9 @@ export class admins {
     @Column()
     sucursal: number;
 
+    @Column( {default: 'admin'} )
+    role : string;
+
     @OneToMany(() => groups, group => group.admin)
     group: groups[];
 

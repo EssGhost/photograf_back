@@ -16,6 +16,7 @@ export class UsersService {
 
   generateRandomPassword(): string {
     const password = randomBytes(5).toString('hex');
+    console.log(password);
     return password;
   }
 

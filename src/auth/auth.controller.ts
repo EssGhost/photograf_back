@@ -1,18 +1,28 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 //service
 import { AuthService } from './auth.service';
 import { ContractsService } from '../contracts/contracts.service';
 
 //dtos
-import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { CreateAdminDto } from '../admins/dto/create-admin.dto';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { CreateContractDto } from 'src/contracts/dto/create-contract.dto';
-import { CreateCredentialDto } from 'src/credentials/dto/create-credential.dto';
 //guard
 import { AuthGuard } from './guard/auth.guard';
+
+//roles
+import { Role } from './enums/role.enum';
+import { Auth } from './decorators/auth.decorators';
+
+
+interface RequestWithUser extends Request {
+    user: {
+        email: string;
+        role: string;
+    }
+}
+
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +42,7 @@ export class AuthController {
     }
 
     @Post('loginAdmin')
+    @UseGuards(AuthGuard)
     loginAdmin(
         @Body()
         loginDto : LoginDto
@@ -51,8 +62,39 @@ export class AuthController {
     @UseGuards(AuthGuard)
     login(
         @Body()
-        CreateCredentialDto : CreateCredentialDto
+        loginDto : LoginDto
     ){
-        return this.authService.loginUser(CreateCredentialDto);
+        return this.authService.loginUser(loginDto);
     }
+
+    @Get('profile')
+    @Auth(Role.USER)
+    profile(
+        @Req() req: RequestWithUser) {
+        return this.authService.profile(req.user)
+    }
+
+    @Get('profileAdmin')
+    @Auth(Role.ADMIN)
+    profileAdmin(
+        @Req() req: RequestWithUser) {
+        return this.authService.profile2(req.user)
+    }
+    
+    // @Get('profile')
+    // @Roles(Role.USER)
+    // @UseGuards(AuthGuard, RolesGuard)
+    // profile(
+    //     @Req() req: RequestWithUser) {
+    //     return this.authService.profile(req.user)
+    // }
+
+    // @Get('profileAdmin')
+    // @Roles(Role.ADMIN)
+    // @UseGuards(AuthGuard, RolesGuard)
+    // profileAdmin(
+    //     @Req() req: RequestWithUser) {
+    //     return this.authService.profile2(req.user)
+    // }
+
 }
