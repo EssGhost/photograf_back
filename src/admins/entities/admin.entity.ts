@@ -1,4 +1,5 @@
-import { groups } from "src/groups/entities/group.entity";
+import { Role } from "../../auth/common/enums/role.enum";
+import { groups } from "../../groups/entities/group.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -15,19 +16,19 @@ export class admins {
     @Column()
     lastname2: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
     @Column()
     username: string;
 
-    @Column()
+    @Column({ select: false })
     password: string;
 
     @Column()
     sucursal: number;
 
-    @Column( {default: 'admin'} )
+    @Column({ type: 'enum', default: Role.ADMIN, enum: Role })
     role : string;
 
     @OneToMany(() => groups, group => group.admin)

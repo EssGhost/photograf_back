@@ -12,8 +12,10 @@ import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthGuard } from './guard/auth.guard';
 
 //roles
-import { Role } from './enums/role.enum';
+import { Role } from './common/enums/role.enum';
 import { Auth } from './decorators/auth.decorators';
+import { ActiveUser } from './common/decorators/active-user.decorator';
+import { UserActivceInterface } from './common/interfaces/user-active.interface';
 
 
 interface RequestWithUser extends Request {
@@ -29,7 +31,6 @@ export class AuthController {
 
     constructor(
         private readonly authService: AuthService,
-        private readonly contractService: ContractsService
     ) {}
 
     ///// Admins /////
@@ -42,7 +43,7 @@ export class AuthController {
     }
 
     @Post('loginAdmin')
-    @UseGuards(AuthGuard)
+    //@UseGuards(AuthGuard)
     loginAdmin(
         @Body()
         loginDto : LoginDto
@@ -59,7 +60,7 @@ export class AuthController {
     }
 
     @Post('loginUser')
-    @UseGuards(AuthGuard)
+    //@UseGuards(AuthGuard)
     login(
         @Body()
         loginDto : LoginDto
@@ -69,29 +70,25 @@ export class AuthController {
 
     @Get('profile')
     @Auth(Role.USER)
-    profile(
-        @Req() req: RequestWithUser) {
-        return this.authService.profile(req.user)
+    profile(@ActiveUser() user: UserActivceInterface) {
+        return this.authService.profile(user)
     }
 
     @Get('profileAdmin')
     @Auth(Role.ADMIN)
-    profileAdmin(
-        @Req() req: RequestWithUser) {
-        return this.authService.profile2(req.user)
+    profileAdmin(@ActiveUser() user: UserActivceInterface) {
+        return this.authService.profile2(user)
     }
-    
+
     // @Get('profile')
-    // @Roles(Role.USER)
-    // @UseGuards(AuthGuard, RolesGuard)
+    // @Auth(Role.USER)
     // profile(
     //     @Req() req: RequestWithUser) {
     //     return this.authService.profile(req.user)
     // }
 
     // @Get('profileAdmin')
-    // @Roles(Role.ADMIN)
-    // @UseGuards(AuthGuard, RolesGuard)
+    // @Auth(Role.ADMIN)
     // profileAdmin(
     //     @Req() req: RequestWithUser) {
     //     return this.authService.profile2(req.user)

@@ -1,8 +1,9 @@
-import { contracts } from "src/contracts/entities/contract.entity";
-import { courtesies_by_user } from "src/courtesies_by_user/entities/courtesies_by_user.entity";
-import { credentials } from "src/credentials/entities/credential.entity";
-import { groups } from "src/groups/entities/group.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Role } from "../../auth/common/enums/role.enum";
+import { contracts } from "../../contracts/entities/contract.entity";
+import { courtesies_by_user } from "../../courtesies_by_user/entities/courtesies_by_user.entity";
+import { credentials } from "../../credentials/entities/credential.entity";
+import { groups } from "../../groups/entities/group.entity";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class users {
@@ -39,7 +40,7 @@ export class users {
     @Column({ default: true })
     status: boolean;
 
-    @Column( {default: 'user'} )
+    @Column({ type: 'enum', default: Role.USER, enum: Role})
     role : string;
 
     @ManyToOne(() => groups, group => group.user)

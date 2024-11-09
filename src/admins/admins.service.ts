@@ -23,9 +23,12 @@ export class AdminsService {
     }
   }
 
-  // create(createAdminDto: CreateAdminDto) {
-  //   return 'This action adds a new admin';
-  // }
+  findByUsernameWithPassword(username: string){
+    return this.adminRepository.findOne({
+      where: { username },
+      select: [ 'password', 'role' ]
+    })
+  }
 
   findAll() {
     return `This action returns all admins`;

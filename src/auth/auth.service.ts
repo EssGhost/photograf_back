@@ -8,7 +8,6 @@ import { JwtService } from '@nestjs/jwt';
 //dto's
 import { CreateAdminDto } from '../admins/dto/create-admin.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { CreateCredentialDto } from 'src/credentials/dto/create-credential.dto';
 import { LoginDto } from './dto/login.dto';
 
 
@@ -43,16 +42,13 @@ export class AuthService {
                 password : await bcrypt.hash(createAdminDto.password, 10),
                 sucursal : createAdminDto.sucursal,
             });
+            //const { password, ...adminWithoutPassword } = newAdmin;
 
-            const payload = { email: newAdmin.email, role: newAdmin.role };
-            const token = await this.jwtService.signAsync(payload);
-            const { password, ...adminWithoutPassword } = newAdmin;
-
-            return { adminWithoutPassword, token, payload };
+            return newAdmin;
         }
 
         async loginAdmin(loginDto : LoginDto){
-            const admin = await this.adminService.findOneByUsername(loginDto.username);
+            const admin = await this.adminService.findByUsernameWithPassword(loginDto.username);
             
             if (!admin) {
                 throw new UnauthorizedException('Username incorrect');
@@ -63,7 +59,11 @@ export class AuthService {
             if (!isPasswordValid) {
                 throw new UnauthorizedException('Password incorrect');
             }
-            return admin;
+
+            const payload = { email: admin.email, role: admin.role };
+            const token = await this.jwtService.signAsync(payload);
+
+            return { username: loginDto.username, token };
         }
 
 
@@ -101,14 +101,13 @@ export class AuthService {
             user : newUser
         });
 
-        const payload = { email: newUser.email, role: newUser.role };
-        const token = await this.jwtService.signAsync(payload);
-
-        return { token, newUser, payload };
+        return newUser ;
     }
 
     async loginUser(loginDto : LoginDto){
-        const credential = await this.credentialsService.findOneByUsername(loginDto.username);
+        
+        const credential = await this.credentialsService.findOneByUsernameWithUser(loginDto.username);
+        //const credential = await this.credentialsService.findOneByUsername(loginDto.username);
         
         if (!credential) {
             throw new UnauthorizedException('Username incorrect');
@@ -120,7 +119,10 @@ export class AuthService {
             throw new UnauthorizedException('Password incorrect');
         }
 
-        return credential;
+        const payload = { email: credential.user.email, role: credential.user.role };
+        const token = await this.jwtService.signAsync(payload);
+
+        return { credential , token };
     }
 
     async profile({ email, role }: { email: string; role: string }) {

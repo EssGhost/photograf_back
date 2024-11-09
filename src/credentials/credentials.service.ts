@@ -27,6 +27,13 @@ export class CredentialsService {
   //   return 'This action adds a new credential';
   // }
 
+  async findOneByUsernameWithUser(username: string) {
+    return this.credentialRepository.findOne({
+        where: { username },
+        relations: ['user'], // Esto cargará la relación con el usuario
+    });
+}
+
   findAll() {
     return `This action returns all credentials`;
   }
