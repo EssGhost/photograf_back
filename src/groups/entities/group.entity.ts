@@ -2,12 +2,15 @@ import { admins } from 'src/admins/entities/admin.entity';
 import { courtesies_by_group } from 'src/courtesies_by_group/entities/courtesies_by_group.entity';
 import { photos } from 'src/photos/entities/photo.entity';
 import { users } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class groups {
     @PrimaryGeneratedColumn()
     id:number;
+
+    @Column({ unique: true })
+    groupCode: string;
 
     @Column()
     name: string;
@@ -38,4 +41,5 @@ export class groups {
     
     @OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.group)
     courtesie_by_group: courtesies_by_group[];
+
 }

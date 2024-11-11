@@ -86,7 +86,7 @@ export class AuthService {
             instagram : createUserDto.instagram,
             facebook : createUserDto.facebook,
             toga : createUserDto.toga,
-            // group : CreateUserDto.group,
+            group : createUserDto.group,
         });
 
         const username = `${newUser.name}${newUser.id}`;
@@ -125,6 +125,8 @@ export class AuthService {
         return { credential , token };
     }
 
+
+    //pruebas
     async profile({ email, role }: { email: string; role: string }) {
         return await this.userService.findOneByEmail(email);
     }
