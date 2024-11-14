@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,7 +35,7 @@ export class ContractsService {
   }
 
   async findOne(id: number) {
-    const user = await this.contraRepo.findOne({
+    const user = await this.contractRepository.findOne({
       where: {
         id,
       },
@@ -47,12 +47,12 @@ export class ContractsService {
 
   async update(id: number, updateContractDto: UpdateContractDto) {
     try {
-      const user = await this.contraRepo.preload({
+      const user = await this.contractRepository.preload({
         //preload precarga la info que ya esta en la bd
         id,
         ...updateContractDto,
       });
-      await this.contraRepo.save(user);
+      await this.contractRepository.save(user);
       return user;
     } catch (error) {
       InternalServerErrorException;
@@ -61,7 +61,7 @@ export class ContractsService {
 
 
   async remove(id: number) {
-    const user = await this.contraRepo.findOne({
+    const user = await this.contractRepository.findOne({
       where: {
         id, //es lo mismo que id:id
       },
@@ -69,7 +69,7 @@ export class ContractsService {
     if (!user) {
       throw new NotFoundException('Contrato no encontrado');
     }
-    await this.contraRepo.delete(id);
+    await this.contractRepository.delete(id);
     return {
       message: `El contrato con el id: ${id} se elimino correctamente`,
     };

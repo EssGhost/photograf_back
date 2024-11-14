@@ -1,8 +1,8 @@
 import { admins } from 'src/admins/entities/admin.entity';
 import { courtesies_by_group } from 'src/courtesies_by_group/entities/courtesies_by_group.entity';
-//import { photos } from 'src/photos/entities/photo.entity';
+import { photos } from 'src/photos/entities/photo.entity';
 import { users } from 'src/users/entities/user.entity';
-import { BeforeInsert, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class groups {

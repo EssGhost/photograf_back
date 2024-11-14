@@ -2,53 +2,51 @@ import { models } from "src/models/entities/model.entity";
 import { users } from "src/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity() // Nombre de la entidad debe estar en minúsculas y en plural (opcional pero recomendado)
-export class contracts {  // Las entidades suelen escribirse en PascalCase y en singular
+@Entity() 
+export class contracts {  
     @PrimaryGeneratedColumn()
     id: number;
 
-    // Columna string, puede ser prudente añadir validación de longitud
-    @Column() 
+    @Column()
     placa: string;
     
-    // Columna booleana
-    @Column({ default: false }) 
+    @Column()
     panoramica: boolean;
     
     @Column()
-    ampliación: boolean;
+    ampliacion: boolean;
+
+    @Column()
+    agradecimiento: boolean;
     
     @Column()
     individual: boolean;
-
-    @Column({ default: false })
+    
+    @Column()
     diploma: boolean;
-
-    @Column({ default: false })
+    
+    @Column()
     convencional: boolean;
-
-    // Columna string
-    @Column() 
+    
+    @Column()
     specification: string;
-
-    @Column() 
+    
+    @Column()
     txt1: string;
 
-    @Column() 
+    @Column()
     dedicated1: string;
 
-    @Column() 
+    @Column()
     txt2: string;
 
-    @Column() 
+    @Column()
     dedicated2: string;
 
-    // Columna con valor por defecto
     @Column({ default: true })
     status: boolean;
 
-    // Relación con users (comentada para ajustarla)
-    @OneToOne(() => users)
+    @OneToOne(() => users, user => user.contract)
     @JoinColumn()
     user: users;
 
