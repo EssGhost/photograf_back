@@ -34,15 +34,45 @@ export class ContractsService {
     return `This action returns all contracts`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contract`;
+  async findOne(id: number) {
+    const user = await this.contraRepo.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('Contrato no encontrado');
+    }
+    return user;  }
+
+  async update(id: number, updateContractDto: UpdateContractDto) {
+    try {
+      const user = await this.contraRepo.preload({
+        //preload precarga la info que ya esta en la bd
+        id,
+        ...updateContractDto,
+      });
+      await this.contraRepo.save(user);
+      return user;
+    } catch (error) {
+      InternalServerErrorException;
+    }
+  }  
+
+
+  async remove(id: number) {
+    const user = await this.contraRepo.findOne({
+      where: {
+        id, //es lo mismo que id:id
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('Contrato no encontrado');
+    }
+    await this.contraRepo.delete(id);
+    return {
+      message: `El contrato con el id: ${id} se elimino correctamente`,
+    };
   }
 
-  update(id: number, updateContractDto: UpdateContractDto) {
-    return `This action updates a #${id} contract`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} contract`;
-  }
 }

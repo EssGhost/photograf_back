@@ -9,9 +9,9 @@ export class photos {
     @Column()
     name: string;
 
-    @Column()
-    photo: string;
+    @Column('simple-array')
+    image_urls: string[];
 
-    @ManyToOne(() => groups, group => group.photo)
-    group: groups;
+    //@ManyToOne(() => groups, group => group.photo)
+    //group: groups;
 }

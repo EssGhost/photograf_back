@@ -24,9 +24,18 @@ export class ContractsController {
     return this.contractsService.findOne(+id);
   }
 
+
+  @Get('/search')
+  search(@Query('query')query:string){
+    return this.contractsService.search(query);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContractDto: UpdateContractDto) {
-    return this.contractsService.update(+id, updateContractDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateContractsDto: UpdateContractDto,
+  ) {
+    return this.contractsService.update(+id, updateContractsDto);
   }
 
   @Delete(':id')
