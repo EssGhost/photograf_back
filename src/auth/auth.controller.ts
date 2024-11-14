@@ -35,15 +35,14 @@ export class AuthController {
 
     ///// Admins /////
     @Post('registerAdmin')
-    registerAdmin(
+    async registerAdmin(
         @Body()
         CreateAdminDto : CreateAdminDto
     ) {
-        return this.authService.registerAdmin(CreateAdminDto);
+        return await this.authService.registerAdmin(CreateAdminDto);
     }
 
     @Post('loginAdmin')
-    //@UseGuards(AuthGuard)
     loginAdmin(
         @Body()
         loginDto : LoginDto
@@ -60,11 +59,7 @@ export class AuthController {
     }
 
     @Post('loginUser')
-    //@UseGuards(AuthGuard)
-    login(
-        @Body()
-        loginDto : LoginDto
-    ){
+    login(@Body()loginDto : LoginDto){
         return this.authService.loginUser(loginDto);
     }
 

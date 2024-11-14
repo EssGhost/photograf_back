@@ -21,7 +21,7 @@ export class ContractsService {
       const user = await this.userService.findOne(userId);
       const contract = await this.contractRepository.create({
         ...createContractDto,
-      user: user,
+        user: user,
       });
       await this.contractRepository.save(contract);
       return contract;
