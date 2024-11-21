@@ -1,6 +1,6 @@
 import { Transform, Type } from "class-transformer";
-import { IsBoolean, IsDate, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
-import { admins } from "src/admins/entities/admin.entity";
+import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MinLength, ValidateNested } from "class-validator";
+import { CreateCourtesyDto } from "../../courtesies/dto/create-courtesy.dto";
 
 export class CreateGroupDto {
     @IsString()
@@ -23,14 +23,17 @@ export class CreateGroupDto {
     @MinLength(3)
     graduacion: string;
 
+    @Type(() => Date)
     @IsDate()
     entrega: Date;
 
-    @IsBoolean()
-    status: boolean;
+    @IsString()
+    @IsNotEmpty()
+    courtesyName: string; 
 
-    @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    admin: admins;
+    // @IsOptional()
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => Number )
+    // admin: admins;
 }

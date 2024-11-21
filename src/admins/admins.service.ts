@@ -35,7 +35,7 @@ export class AdminsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} admin`;
+    return this.adminRepository.findOneBy({ id })
   }
 
   findOneByEmail(email: string) {

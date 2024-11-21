@@ -6,11 +6,10 @@ import { Entity, ManyToOne, PrimaryGeneratedColumn, } from "typeorm";
 export class courtesies_by_user {
     @PrimaryGeneratedColumn()
     id: number;
-    
+
     @ManyToOne(() => users, user => user.courtesie_by_user)
     user: users;
 
     @ManyToOne(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.courtesie_by_user)
     cbg: courtesies_by_group;
-
 }

@@ -7,7 +7,7 @@ import { UpdateCourtesyDto } from './dto/update-courtesy.dto';
 export class CourtesiesController {
   constructor(private readonly courtesiesService: CourtesiesService) {}
 
-  @Post()
+  @Post('createCourtesy')
   create(@Body() createCourtesyDto: CreateCourtesyDto) {
     return this.courtesiesService.create(createCourtesyDto);
   }

@@ -75,7 +75,7 @@ export class AuthService {
         if (user) {
             throw new BadRequestException('Email already in use');
         }
-
+        
         const newUser = await this.userService.create({
             name : createUserDto.name,
             lastname1 : createUserDto.lastname1,
@@ -88,7 +88,9 @@ export class AuthService {
             toga : createUserDto.toga,
             group : createUserDto.group,
         });
-
+        
+        //const userWithGroup = await this.userService.findOne(newUser.id);
+        
         const username = `${newUser.name}${newUser.id}`;
 
         const rawPassword = this.userService.generateRandomPassword();
@@ -101,7 +103,7 @@ export class AuthService {
             user : newUser
         });
 
-        return newUser ;
+        return newUser;
     }
 
     async loginUser(loginDto : LoginDto){

@@ -35,7 +35,14 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.userRepository.findOneBy({ id });
+    const user = this.userRepository.findOne({
+      where: { id },
+      relations: {group: true}
+    });
+    if (!user) {
+      throw new InternalServerErrorException(`Element with id ${id} not found.`);
+    }
+    return user;
   }
 
   findOneByEmail(email: string) {

@@ -30,8 +30,8 @@ export class groups {
     @Column({ default: true })
     status: boolean;
 
-    @ManyToOne(() => admins, admin => admin.group)
-    admin: admins;
+    @ManyToOne(() => admins, admin => admin.group, {nullable: true})
+    admin?: admins;
 
     @OneToMany(() => users, user => user.group)
     user: users[];
@@ -40,6 +40,5 @@ export class groups {
     photo: photos[];
     
     @OneToMany(() => courtesies_by_group, courtesie_by_group => courtesie_by_group.group)
-    courtesie_by_group: courtesies_by_group[];
-
+    courtesie_by_group?: courtesies_by_group[];
 }

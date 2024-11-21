@@ -9,68 +9,69 @@ import { Like, Repository } from 'typeorm';
 export class CourtesiesService {
 
   constructor( @InjectRepository(courtesies)
-  private corteRepo: Repository<courtesies>){}
+  private courtesyRepository: Repository<courtesies>){}
 
   async create(createCourtesyDto: CreateCourtesyDto) {
     try {
-      const corte = this.corteRepo.create(createCourtesyDto);
-      await this.corteRepo.save(corte); //aqui ya se guarda en la bd los datos ingresados
-      return corte;
+      const courtesy = this.courtesyRepository.create(createCourtesyDto);
+      await this.courtesyRepository.save(courtesy);
+      return courtesy;
     } catch (error) {
       throw new InternalServerErrorException(error);
-    }   }
+    }   
+  }
 
   async findAll() {
     try {
-      const corte = await this.corteRepo.find();
-      return corte;
+      const courtesy = await this.courtesyRepository.find();
+      return courtesy;
     } catch (error) {
       throw new InternalServerErrorException(error);
     }  }
 
     async search(query: string) {
-      const corte = await this.corteRepo.find({
+      const courtesy = await this.courtesyRepository.find({
         where: {
           name: Like(`%${query}%`),
         },
       });
-      return corte;
+      return courtesy;
     }
 
   async findOne(id: number) {
-    const corte = await this.corteRepo.findOne({
+    const courtesy = await this.courtesyRepository.findOne({
       where: {
         id,
       },
     });
-    if (!corte) {
+    if (!courtesy) {
       throw new NotFoundException('Cortesia no encontrada');
     }
-    return corte;    }
+    return courtesy;    }
 
   async update(id: number, updateCourtesyDto: UpdateCourtesyDto) {
     try {
-      const corte = await this.corteRepo.preload({
+      const courtesy = await this.courtesyRepository.preload({
         //preload precarga la info que ya esta en la bd
         id,
         ...updateCourtesyDto,
       });
-      await this.corteRepo.save(corte);
-      return corte;
+      await this.courtesyRepository.save(courtesy);
+      return courtesy;
     } catch (error) {
       InternalServerErrorException;
     }  }
 
   async remove(id: number) {
-    const corte = await this.corteRepo.findOne({
+    const courtesy = await this.courtesyRepository.findOne({
       where: {
         id, //es lo mismo que id:id
       },
     });
-    if (!corte) {
+    if (!courtesy) {
       throw new NotFoundException('Cortesia no encontrado');
     }
-    await this.corteRepo.delete(id);
+    await this.courtesyRepository.delete(id);
     return {
       message: `La cortesia con el id: ${id} se elimino correctamente`,
     };
