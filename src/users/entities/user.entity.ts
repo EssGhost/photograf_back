@@ -1,6 +1,7 @@
 import { contracts } from "src/contracts/entities/contract.entity";
 import { courtesies_by_user } from "src/courtesies_by_user/entities/courtesies_by_user.entity";
 import { groups } from "src/groups/entities/group.entity";
+import { payments } from "src/payments/entities/payment.entity";
 import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -40,6 +41,9 @@ export class users {
 
     @ManyToOne(() => groups, group => group.user)
     id_group: groups;
+
+    @ManyToOne(() => payments, (pay) => pay.user, { nullable: true })
+    pay: payments;
 
     //@OneToMany(() => courtesies_by_user, courtesie_by_user => courtesie_by_user.id_user)
     //courtesie_by_user: courtesies_by_user[];

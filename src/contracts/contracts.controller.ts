@@ -2,16 +2,23 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
+import { contracts } from './entities/contract.entity';
 
 @Controller('contracts')
 export class ContractsController {
-  constructor(private readonly contractsService: ContractsService) {}
+  constructor(
+    private readonly contractsService: ContractsService,
 
-  @Post('upload')
-  create(@Body() createContractDto: CreateContractDto) {
-    return this.contractsService.create(createContractDto);
+  ) {}
+
+  @Post()
+  async createContract(
+      @Body() createContractDto: CreateContractDto
+  ): Promise<contracts> {
+      return this.contractsService.createContract(createContractDto);
   }
 
+ 
   @Get()
   findAll() {
     return this.contractsService.findAll();

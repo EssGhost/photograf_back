@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsBoolean, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsDecimal, IsNotEmpty, IsNumber, IsPositive, IsString, Max, Min, MinLength } from "class-validator";
 
 export class CreateContractDto {
     // Transformación para eliminar espacios en blanco y validación de tipo y longitud mínima
@@ -55,4 +55,12 @@ export class CreateContractDto {
     // Validación booleana
     @IsBoolean()
     status: boolean;
+
+    @IsNumber()
+    cost: number; // Nota: Puede requerir recibir el valor como string
+
+    @IsNotEmpty()
+    @IsNumber()
+    userId: number; // Si necesitas asociar el usuario
+
 }

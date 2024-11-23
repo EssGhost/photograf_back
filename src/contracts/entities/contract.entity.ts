@@ -50,6 +50,9 @@ export class contracts {  // Las entidades suelen escribirse en PascalCase y en 
     @Column({ default: true })
     status: boolean;
 
+    @Column('decimal', { precision: 10, scale: 2 })
+    cost: number; // Monto de la transacción
+    
     // Relación con users (comentada para ajustarla)
     @OneToOne(() => users)
     @JoinColumn()

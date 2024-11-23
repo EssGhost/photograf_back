@@ -14,9 +14,10 @@ import { CourtesiesByGroupModule } from './courtesies_by_group/courtesies_by_gro
 import { CourtesiesModule } from './courtesies/courtesies.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule } from '@nestjs/config';
+import { StripeModule } from './stripe/stripe.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
-  
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -26,11 +27,25 @@ import { ConfigModule } from '@nestjs/config';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'Nolocbrodisculpa5',
+      password: 'Nolocbrodisculpa5', 
       database: 'photograf',
       autoLoadEntities: true,
-      synchronize: true,}),
-    UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule, CloudinaryModule],
+      synchronize: true,
+    }),
+    UsersModule,
+    AuthModule,
+    AdminsModule,
+    ContractsModule,
+    GroupsModule,
+    ModelsModule,
+    PhotosModule,
+    CourtesiesByUserModule,
+    CourtesiesByGroupModule,
+    CourtesiesModule,
+    CloudinaryModule,
+    StripeModule,
+    PaymentsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
