@@ -63,17 +63,17 @@ export class AuthController {
         return this.authService.loginUser(loginDto);
     }
 
-    @Get('profile')
-    @Auth(Role.USER)
-    profile(@ActiveUser() user: UserActivceInterface) {
-        return this.authService.profile(user)
-    }
+    // @Get('profile')
+    // @Auth(Role.USER)
+    // profile(@ActiveUser() user: UserActivceInterface) {
+    //     return this.authService.profile(user)
+    // }
 
-    @Get('profileAdmin')
-    @Auth(Role.ADMIN)
-    profileAdmin(@ActiveUser() user: UserActivceInterface) {
-        return this.authService.profile2(user)
-    }
+    // @Get('profileAdmin')
+    // @Auth(Role.ADMIN)
+    // profileAdmin(@ActiveUser() user: UserActivceInterface) {
+    //     return this.authService.profile2(user)
+    // }
 
     // @Get('profile')
     // @Auth(Role.USER)

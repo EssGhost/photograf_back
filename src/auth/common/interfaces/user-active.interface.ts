@@ -1,4 +1,4 @@
 export interface UserActivceInterface {
-    email: string;
+    id: number;
     role: string;
 }

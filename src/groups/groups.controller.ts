@@ -1,18 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from '../auth/common/interfaces/user-active.interface';
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Role } from '../auth/common/enums/role.enum';
 
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
   @Post('createGroup')
-  @UseGuards(AuthGuard)
-  create(@Body() createGroupDto: CreateGroupDto, @Request() req) {
+  @Auth(Role.ADMIN)
+  create(@Body() createGroupDto: CreateGroupDto, @ActiveUser() user: UserActivceInterface) {
     const { courtesyName } = createGroupDto;
-    return this.groupsService.create(createGroupDto, req.user.userId, courtesyName);
+    const adminId = user.id;
+    return this.groupsService.create(createGroupDto, adminId, courtesyName);
   }
 
   @Get()

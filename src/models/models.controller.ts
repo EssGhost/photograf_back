@@ -7,7 +7,7 @@ import { UpdateModelDto } from './dto/update-model.dto';
 export class ModelsController {
   constructor(private readonly modelsService: ModelsService) {}
 
-  @Post()
+  @Post('createModel')
   create(@Body() createModelDto: CreateModelDto) {
     return this.modelsService.create(createModelDto);
   }

@@ -1,10 +1,11 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { contracts } from './entities/contract.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
+import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
 
 @Injectable()
 export class ContractsService {
@@ -16,17 +17,23 @@ export class ContractsService {
   ){}
   
   
-  async create(createContractDto: CreateContractDto, userId: number) {
+  async create(createContractDto: CreateContractDto, @ActiveUser() user: any) {
     try {
-      const user = await this.userService.findOne(userId);
+      const activeUser = await this.userService.findOne(user);
+      console.log(activeUser);
       const contract = await this.contractRepository.create({
         ...createContractDto,
-        user: user,
+        user: activeUser,
       });
       await this.contractRepository.save(contract);
       return contract;
     } catch (error) {
-      throw new InternalServerErrorException(error);
+      if (error.code === '23505') {
+        throw new ConflictException(
+            `El usuario tiene un contrato asociado.`
+        );
+    }
+    throw new InternalServerErrorException(error.message);
     }
   }
 

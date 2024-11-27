@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AdminsService } from '../admins/admins.service';
 import { courtesies } from 'src/courtesies/entities/courtesy.entity';
 import { courtesies_by_group } from 'src/courtesies_by_group/entities/courtesies_by_group.entity';
+import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
 
 @Injectable()
 export class GroupsService {
@@ -20,7 +21,7 @@ export class GroupsService {
     private readonly courtesiesByGroupRepository: Repository<courtesies_by_group>,
     private readonly adminService: AdminsService,
   ){}
-    async create(createGroupDto: CreateGroupDto, adminId: number, courtesyName: string) {
+    async create(createGroupDto: CreateGroupDto, @ActiveUser() user: any, courtesyName: string) {
       //creacion y manejo de groupCode
       const MAX_RETRIES = 5;
       let retryCount = 0;
@@ -36,7 +37,10 @@ export class GroupsService {
           const nextNumber = lastNumber + 1;
           const groupCode = `GUP${nextNumber.toString().padStart(6, '0')}`;
           //asignacion automatica de un grupo con un admin
-          const activeAdmin = await this.adminService.findOne(adminId);
+          const activeAdmin = await this.adminService.findOne(user);
+          // if (!activeAdmin) {
+          //   throw new NotFoundException('No se encontró el administrador activo.');
+          // }
           const group = this.groupRepository.create({
             ...createGroupDto,
             groupCode,
@@ -47,7 +51,6 @@ export class GroupsService {
           let courtesy = await this.courtesyRepository.findOne({
             where: { name: courtesyName },
           });
-    
           if (!courtesy) {
             courtesy = this.courtesyRepository.create({ name: courtesyName });
             courtesy = await this.courtesyRepository.save(courtesy);
@@ -59,12 +62,12 @@ export class GroupsService {
           await this.courtesiesByGroupRepository.save(courtesiesByGroup);
           return savedGroup;
         } catch (error) {
-            if (error.code === '23505') { // Duplicado detectado
+            if (error.code === '23505') { 
               retryCount++;
               console.warn(`Reintento ${retryCount} por groupCode duplicado.`);
               continue;
             }
-            throw error; // Otros errores
+            throw error; 
           }
         }
       throw new InternalServerErrorException('No se pudo generar un código único después de varios intentos.');
@@ -84,7 +87,7 @@ export class GroupsService {
     return group;
   }
 
-  async findOneByGroupCoode(groupCode: string) {
+  async findOneByGroupCode(groupCode: string) {
     const group = await this.groupRepository.findOne({
       where: { groupCode },
     });

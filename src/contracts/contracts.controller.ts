@@ -2,16 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request }
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
-import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from '../auth/common/interfaces/user-active.interface';
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Role } from '../auth/common/enums/role.enum';
 
 @Controller('contracts')
 export class ContractsController {
   constructor(private readonly contractsService: ContractsService) {}
 
   @Post('createContract')
-  @UseGuards(AuthGuard)
-  create(@Body() createContractDto: CreateContractDto, @Request() req) {
-    return this.contractsService.create(createContractDto, req.user.userId);
+  @Auth(Role.USER)
+  create(@Body() createContractDto: CreateContractDto, @ActiveUser() user: UserActivceInterface) {
+    const userId = user.id;
+    return this.contractsService.create(createContractDto, userId);
   }
 
   @Get()

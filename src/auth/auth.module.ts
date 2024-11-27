@@ -8,10 +8,11 @@ import { CredentialsModule } from 'src/credentials/credentials.module';
 import { ContractsModule } from 'src/contracts/contracts.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstant } from './constants/jwt.constant';
+import { GroupsModule } from 'src/groups/groups.module';
 
 @Module({
   imports : [
-    UsersModule, AdminsModule, CredentialsModule, ContractsModule,
+    UsersModule, AdminsModule, CredentialsModule, ContractsModule, GroupsModule,
     JwtModule.register({
       global: true,
       secret: jwtConstant.secret, // Cambia por tu clave secreta
