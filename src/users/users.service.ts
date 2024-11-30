@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,8 +29,17 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number): Promise<users> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'name'], // Incluye los campos necesarios
+    });
+  
+    if (!user) {
+      throw new HttpException(`User with ID ${id} not found`, HttpStatus.NOT_FOUND);
+    }
+  
+    return user;
   }
 
   findOneByEmail(email: string) {
