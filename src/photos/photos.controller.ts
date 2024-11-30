@@ -19,7 +19,7 @@ export class PhotosController {
   ) {}
 
   @Post()
-@UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 10 }]))
+@UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 30 }]))
 async uploadProduct(
   @UploadedFiles() files: { images?: Express.Multer.File[] },
   @Body() createPhotoDto: CreatePhotoDto,
