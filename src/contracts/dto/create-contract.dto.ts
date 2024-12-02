@@ -1,5 +1,5 @@
 import { Transform, Type } from "class-transformer";
-import { IsBoolean, IsNumber, IsPositive, IsDecimal, IsNotEmpty, IsString, Max, Min, MinLength } from "class-validator";
+import { IsBoolean, IsNumber, IsPositive, IsDecimal, IsNotEmpty, IsString, Max, Min, MinLength, IsOptional } from "class-validator";
 import { models } from "src/models/entities/model.entity";
 
 export class CreateContractDto {
@@ -44,12 +44,14 @@ export class CreateContractDto {
     @Transform(({ value }) => value.trim())
     @IsString()
     @MinLength(3)
-    txt2: string;
+    @IsOptional()
+    txt2?: string;
 
     @Transform(({ value }) => value.trim())
     @IsString()
     @MinLength(2)
-    dedicated2: string;
+    @IsOptional()
+    dedicated2?: string;
 
     @IsNumber()
     @IsPositive()

@@ -30,6 +30,7 @@ export class GroupsController {
   }
 
   @Get('/code/:groupCode')
+  @Auth(Role.ADMIN || Role.USER)
   findOneByGroupCode(@Param('groupCode') groupCode: string) {
     return this.groupsService.findOneByGroupCode(groupCode);
   }
