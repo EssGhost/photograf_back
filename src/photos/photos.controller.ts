@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, HttpException, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { CreatePhotoDto } from './dto/create-photo.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
@@ -7,6 +7,9 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CloudinaryUploadResult } from 'src/cloudinary/cloudinary.types';
 import { UsersService } from 'src/users/users.service';
 import { GroupsService } from 'src/groups/groups.service';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from 'src/auth/common/interfaces/user-active.interface';
 
 @Controller('photos')
 export class PhotosController {
@@ -68,15 +71,27 @@ async uploadProduct(
   }
 }
 
-@Get('by-user/:userId')
-async getPhotosByUser(@Param('userId') userId: number) {
-  return this.photosService.getPhotosByUser(userId);
+@Get('by-user')
+  @UseGuards(AuthGuard)
+  async getPhotosByUser(@ActiveUser() user: UserActivceInterface) {
+    const userId = user.id; // Extraer userId del token
+    return this.photosService.getPhotosByUser(userId,);
+  }
+
+ @Get('by-group')
+ @UseGuards(AuthGuard)
+async getPhotosByGroup(@ActiveUser() user: UserActivceInterface) {
+
+  return this.photosService.getPhotosByGroup(user);
 }
 
-@Get('by-group/:groupId')
-async getPhotosByGroup(@Param('groupId') groupId: number) {
-  return this.photosService.getPhotosByGroup(groupId);
-}
+@Patch(':id/category')
+  async assignCategory(
+    @Param('id') photoId: number,
+    @Body('category') category: string,  // Asegúrate de enviar el nombre de la categoría en el cuerpo de la solicitud
+  ) {
+    return this.photosService.assignCategory(photoId, category);
+  }
 
   @Get()
   findAll() {

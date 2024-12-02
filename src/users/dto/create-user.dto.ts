@@ -47,13 +47,13 @@ export class CreateUserDto {
     //@IsPositive()
     toga: number;
 
+    @IsString()
+    @IsNotEmpty()
+    group: string;
     // @IsNumber()
     // @IsPositive()
     // @Type(() => groups )
     // group: groups;
-    @IsString()
-    @IsNotEmpty()
-    group: string;
     // @IsBoolean()
     // status: boolean;
 

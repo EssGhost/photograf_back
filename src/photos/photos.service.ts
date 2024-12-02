@@ -6,6 +6,7 @@ import { photos } from './entities/photo.entity';
 import { Like, Repository } from 'typeorm';
 import { users } from 'src/users/entities/user.entity';
 import { groups } from 'src/groups/entities/group.entity';
+import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
 
 @Injectable()
 export class PhotosService {
@@ -37,40 +38,63 @@ export class PhotosService {
     return await this.photoRepo.save(photo);
   }
 
-  async getPhotosByUser(userId: number) {
+  async getPhotosByUser(@ActiveUser() user: any) {
     try {
-      const photos = await this.photoRepo.find({
-        where: { user: { id: userId } },
-        relations: ['user', 'group'],
-        select: ['id', 'name', 'image_urls', 'user', 'group'], // Traemos solo lo necesario
-      });
-
-      if (!photos || photos.length === 0) {
-        throw new Error('No photos found for the given user');
-      }
-
+      const activeUser=user;
+      const photos = await this.usersRepo.findOne({
+    
+        where: { id: activeUser}, 
+        relations: ['photos'], 
+        select: ['id', 'photos'],      });
+            
       return photos;
     } catch (error) {
-      throw new Error(`Error fetching photos by user: ${error.message}`);
+      throw new Error(`Error al obtener fotos del usuario: ${error.message}`);
     }
   }
 
-  async getPhotosByGroup(groupId: number) {
+  async getPhotosByGroup(@ActiveUser() user: any) {
     try {
-      const photos = await this.photoRepo.find({
-        where: { group: { id: groupId } },
-        relations: ['user', 'group'],
-        select: ['id', 'name', 'image_urls', 'user', 'group'], // Traemos solo lo necesario
+  
+      const userWithGroup = await this.usersRepo.findOne({
+        where: { id: user.id }, 
+        relations: ['group'],
       });
-
-      if (!photos || photos.length === 0) {
-        throw new Error('No photos found for the given group');
+  
+      if (!userWithGroup || !userWithGroup.group) {
+        throw new NotFoundException('El usuario no pertenece a ningún grupo');
       }
-
+  
+      const groupId = userWithGroup.group.id; 
+  
+  
+      const groupWithPhotos = await this.groupsRepo.findOne({
+        where: { id: groupId }, 
+        relations: ['user', 'user.photos'], 
+      });
+  
+      if (!groupWithPhotos ||  groupWithPhotos.user.length === 0) {
+        throw new NotFoundException('No se encontraron fotos para este grupo');
+      }
+  
+  
+      const photos = groupWithPhotos.user.flatMap((user) => user.photos);
+  
       return photos;
     } catch (error) {
-      throw new Error(`Error fetching photos by group: ${error.message}`);
+      throw new Error(`Error: ${error.message}`);
     }
+  }
+
+  async assignCategory(photoId: number, category: string): Promise<photos> {
+    const photo = await this.photoRepo.findOne({ where: { id: photoId } });
+
+    if (!photo) {
+      throw new NotFoundException(`Photo with ID ${photoId} not found`);
+    }
+
+    photo.category = category; // Asigna la categoría directamente
+    return this.photoRepo.save(photo); // Guarda la foto con la nueva categoría
   }
 
 

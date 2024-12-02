@@ -8,10 +8,9 @@ import { courtesies } from 'src/courtesies/entities/courtesy.entity';
 import { courtesies_by_group } from 'src/courtesies_by_group/entities/courtesies_by_group.entity';
 
 @Module({
+  controllers: [GroupsController],
+  providers: [GroupsService],
   imports: [TypeOrmModule.forFeature([groups, courtesies, courtesies_by_group]), AdminsModule, ],
   exports: [GroupsService]
-  providers: [GroupsService],
-  controllers: [GroupsController],
-  exports: [GroupsService],
 })
 export class GroupsModule {}

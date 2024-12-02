@@ -13,10 +13,13 @@ export class photos {
     @Column('simple-array')
     image_urls: string[];
 
+    @Column()
+    category: string;
+
     @ManyToOne(() => users, (user) => user.photos, { nullable: false })
     user: users;
 
-    @ManyToOne(() => groups, (group) => group.photos, { nullable: false })
+    @ManyToOne(() => groups, (group) => group.photo, { nullable: false })
     group: groups;
 
     //@ManyToOne(() => groups, group => group.photo)

@@ -30,10 +30,10 @@ export class users {
     @Column()
     tag: boolean;
 
-    @Column()
+    @Column({nullable: true})
     instagram: string;
 
-    @Column()
+    @Column({nullable: true})
     facebook: string;
 
     @Column('float')

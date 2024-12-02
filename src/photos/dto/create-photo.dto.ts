@@ -1,5 +1,5 @@
 
-import { IsNumber, IsPositive, IsString, MinLength, IsArray, IsOptional, } from "class-validator";
+import { IsNumber, IsPositive, IsString, MinLength, IsArray, IsOptional, IsNotEmpty, } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { groups } from "src/groups/entities/group.entity";
 
@@ -14,8 +14,13 @@ export class CreatePhotoDto {
     @IsOptional()
     image_urls?: string[];
 
+    @IsNotEmpty()
+    @Type(() => Number) // Transformar a número
     @IsNumber()
-    @IsPositive()
-    @Type(() => Number )
-    group: groups;
+    groupId: number;
+
+    @IsNotEmpty()
+    @Type(() => Number) // Transformar a número
+    @IsNumber()
+    userId: number;
 }

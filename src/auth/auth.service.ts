@@ -23,8 +23,6 @@ export class AuthService {
         private readonly mailService: MailService,
         ){}
 
-        private readonly TOKEN_EXPIRATION_TIME = 3600;
-
         /////  admins  /////
         async registerAdmin(createAdminDto : CreateAdminDto){
             const admin = await this.adminService.findOneByEmail(createAdminDto.email)
@@ -45,8 +43,6 @@ export class AuthService {
                 password : await bcrypt.hash(createAdminDto.password, 10),
                 sucursal : createAdminDto.sucursal,
             });
-            //const { password, ...adminWithoutPassword } = newAdmin;
-
             return newAdmin;
         }
 
@@ -80,7 +76,8 @@ export class AuthService {
             throw new BadRequestException(`Group with code ${createUserDto.group} not found`);
         }
         const newUser = await this.userService.create(createUserDto);
-        const username = `${newUser.name}${newUser.id}`;
+        const firstName = newUser.name.split(' ')[0];
+        const username = `${firstName}${newUser.id}`;
         const rawPassword = this.userService.generateRandomPassword();
         const hashedPassword = await bcrypt.hash(rawPassword, 10);
 

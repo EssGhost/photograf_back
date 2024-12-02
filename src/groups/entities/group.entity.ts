@@ -1,7 +1,6 @@
 import { admins } from 'src/admins/entities/admin.entity';
 import { courtesies_by_group } from 'src/courtesies_by_group/entities/courtesies_by_group.entity';
 import { photos } from 'src/photos/entities/photo.entity';
-import { photos } from 'src/photos/entities/photo.entity';
 import { users } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -40,8 +39,8 @@ export class groups {
     @OneToMany(() => photos, photo => photo.group)
     photo: photos[];
     
-    @OneToMany(() => photos, (photo) => photo.group)
-    photos: photos[];
+    // @OneToMany(() => photos, (photo) => photo.group)
+    // photos: photos[];
     
     @OneToMany(() => courtesies_by_group, courtesy_by_group => courtesy_by_group.group)
     courtesy_by_group?: courtesies_by_group[];
