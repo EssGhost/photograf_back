@@ -37,10 +37,10 @@ export class contracts {
     @Column()
     dedicated1: string;
 
-    @Column()
+    @Column({nullable: true})
     txt2: string;
 
-    @Column()
+    @Column({nullable: true})
     dedicated2: string;
 
     @Column({ default: true })

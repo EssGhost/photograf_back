@@ -24,6 +24,8 @@ import { ConfirmPaymentDto } from './dto/confirm-payment.dto';
 import { PaymentState } from './payment-state.enum';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { Auth } from 'src/auth/decorators/auth.decorators';
+import { Role } from 'src/auth/common/enums/role.enum';
 
 @Controller('payments')
 export class PaymentsController {
@@ -33,6 +35,7 @@ export class PaymentsController {
   ) {}
 
   @Post('create-payment-intent')
+  @Auth(Role.USER)
   async createPaymentIntent(@Body() createPaymentDto: CreatePaymentDto) {
     try {
       // Asumiendo que getContractById ahora acepta también userId

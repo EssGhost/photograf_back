@@ -10,6 +10,8 @@ import { GroupsService } from 'src/groups/groups.service';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
 import { UserActivceInterface } from 'src/auth/common/interfaces/user-active.interface';
+import { Auth } from 'src/auth/decorators/auth.decorators';
+import { Role } from 'src/auth/common/enums/role.enum';
 
 @Controller('photos')
 export class PhotosController {
@@ -22,68 +24,68 @@ export class PhotosController {
   ) {}
 
   @Post()
-@UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 30 }]))
-async uploadProduct(
+  @Auth(Role.ADMIN)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 30 }]))
+  async uploadProduct(
   @UploadedFiles() files: { images?: Express.Multer.File[] },
   @Body() createPhotoDto: CreatePhotoDto,
-) {
-  try {
+  ) {
+    try {
 
-    if (!files.images || files.images.length === 0) {
-      throw new HttpException('No files uploaded', HttpStatus.BAD_REQUEST);
+      if (!files.images || files.images.length === 0) {
+        throw new HttpException('No files uploaded', HttpStatus.BAD_REQUEST);
+      }
+
+      const { userId, groupId } = createPhotoDto;
+
+      // Verificar si el usuario y el grupo existen
+      const user = await this.usersService.findOne(userId); // Busca el usuario
+      const group = await this.groupsService.findOne(groupId); // Busca el grupo
+
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (!group) {
+        throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+      }
+
+      // Subir imágenes a Cloudinary con la estructura de carpetas basada en nombres
+      const uploadResults = await this.cloudinaryService.uploadImages(
+        files.images,
+        `groups/${group.name}/users/${user.name}`
+      );
+
+      const imageUrls = uploadResults.map((result) => result.secure_url);
+
+      // Crear las fotos asociadas al usuario y grupo
+      const photo = await this.photosService.create({
+        ...createPhotoDto,
+        image_urls: imageUrls,
+      });
+
+      return photo;
+    } catch (error) {
+      console.error('Error al subir foto:', error);
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    const { userId, groupId } = createPhotoDto;
-
-    // Verificar si el usuario y el grupo existen
-    const user = await this.usersService.findOne(userId); // Busca el usuario
-    const group = await this.groupsService.findOne(groupId); // Busca el grupo
-
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (!group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
-
-    // Subir imágenes a Cloudinary con la estructura de carpetas basada en nombres
-    const uploadResults = await this.cloudinaryService.uploadImages(
-      files.images,
-      `groups/${group.name}/users/${user.name}`
-    );
-
-    const imageUrls = uploadResults.map((result) => result.secure_url);
-
-    // Crear las fotos asociadas al usuario y grupo
-    const photo = await this.photosService.create({
-      ...createPhotoDto,
-      image_urls: imageUrls,
-    });
-
-    return photo;
-  } catch (error) {
-    console.error('Error al subir foto:', error);
-    throw new HttpException(
-      'Internal server error',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
-  }
-}
-
-@Get('by-user')
-  @UseGuards(AuthGuard)
-  async getPhotosByUser(@ActiveUser() user: UserActivceInterface) {
-    const userId = user.id; // Extraer userId del token
-    return this.photosService.getPhotosByUser(userId,);
   }
 
- @Get('by-group')
- @UseGuards(AuthGuard)
-async getPhotosByGroup(@ActiveUser() user: UserActivceInterface) {
+  @Get('by-user')
+  @Auth(Role.USER)
+    async getPhotosByUser(@ActiveUser() user: UserActivceInterface) {
+      const userId = user.id; // Extraer userId del token
+      return this.photosService.getPhotosByUser(userId,);
+    }
 
-  return this.photosService.getPhotosByGroup(user);
-}
+  @Get('by-group')
+  @Auth(Role.USER)
+    async getPhotosByGroup(@ActiveUser() user: UserActivceInterface) {
+    return this.photosService.getPhotosByGroup(user);
+  }
 
 @Patch(':id/category')
   async assignCategory(
