@@ -39,6 +39,9 @@ export class groups {
     @OneToMany(() => photos, photo => photo.group)
     photo: photos[];
     
+    // @OneToMany(() => photos, (photo) => photo.group)
+    // photos: photos[];
+    
     @OneToMany(() => courtesies_by_group, courtesy_by_group => courtesy_by_group.group)
     courtesy_by_group?: courtesies_by_group[];
 }

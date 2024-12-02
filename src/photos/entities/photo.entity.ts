@@ -1,4 +1,5 @@
 import { groups } from "src/groups/entities/group.entity";
+import { users } from "src/users/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -12,6 +13,15 @@ export class photos {
     @Column('simple-array')
     image_urls: string[];
 
-    @ManyToOne(() => groups, group => group.photo)
+    @Column()
+    category: string;
+
+    @ManyToOne(() => users, (user) => user.photos, { nullable: false })
+    user: users;
+
+    @ManyToOne(() => groups, (group) => group.photo, { nullable: false })
     group: groups;
+
+    //@ManyToOne(() => groups, group => group.photo)
+    //id_group: groups;
 }

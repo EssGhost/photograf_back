@@ -95,8 +95,7 @@ export class GroupsService {
     }
     return group;
   }
-
-  update(id: number, updateGroupDto: UpdateGroupDto) {
+  update(id : number, UpdateGroupDto: UpdateGroupDto) {
     return `This action updates a #${id} group`;
   }
 
@@ -104,3 +103,6 @@ export class GroupsService {
     return `This action removes a #${id} group`;
   }
 }
+
+
+ 
