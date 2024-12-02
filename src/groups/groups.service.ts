@@ -73,7 +73,12 @@ export class GroupsService {
     }
 
   findAll() {
-    return `This action returns all groups`;
+    try{
+      const cat = this.groupRepository.find();
+      return cat;
+    }catch(error){
+      throw new InternalServerErrorException(error);
+    }   
   }
 
   findOne(id: number) {
