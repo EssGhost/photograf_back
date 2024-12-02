@@ -15,6 +15,8 @@ import { CourtesiesModule } from './courtesies/courtesies.module';
 import { CredentialsModule } from './credentials/credentials.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule } from '@nestjs/config';
+import { StripeModule } from './stripe/stripe.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -29,8 +31,22 @@ import { ConfigModule } from '@nestjs/config';
       password: 'gearsofwar',
       database: 'photograf',
       autoLoadEntities: true,
-      synchronize: true,}),
-      UsersModule, AuthModule, AdminsModule, ContractsModule, GroupsModule, ModelsModule, PhotosModule, CourtesiesByUserModule, CourtesiesByGroupModule, CourtesiesModule, CredentialsModule, CloudinaryModule],
+      synchronize: true,
+    }),
+      UsersModule,
+    AuthModule,
+    AdminsModule,
+    ContractsModule,
+    GroupsModule,
+    ModelsModule,
+    PhotosModule,
+    CourtesiesByUserModule,
+    CourtesiesByGroupModule,
+    CourtesiesModule, CredentialsModule,
+    CloudinaryModule,
+    StripeModule,
+    PaymentsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

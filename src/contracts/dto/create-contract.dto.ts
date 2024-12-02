@@ -1,5 +1,5 @@
 import { Transform, Type } from "class-transformer";
-import { IsBoolean, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsNumber, IsPositive, IsDecimal, IsNotEmpty, IsNumber, IsPositive, IsString, Max, Min, MinLength } from "class-validator";
 import { models } from "src/models/entities/model.entity";
 
 export class CreateContractDto {
@@ -55,4 +55,12 @@ export class CreateContractDto {
     @IsPositive()
     @Type(()=>models)
     model: models
+
+    @IsNumber()
+    cost: number; // Nota: Puede requerir recibir el valor como string
+
+    @IsNotEmpty()
+    @IsNumber()
+    userId: number; // Si necesitas asociar el usuario
+
 }

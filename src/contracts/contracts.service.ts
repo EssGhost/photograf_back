@@ -6,6 +6,7 @@ import { contracts } from './entities/contract.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
+import { payments } from 'src/payments/entities/payment.entity';
 
 @Injectable()
 export class ContractsService {
@@ -82,4 +83,31 @@ export class ContractsService {
     };
   }
 
+
+  async createContract(createContractDto: CreateContractDto): Promise<contracts> {
+    // Crear el contrato
+    const newContract = this.contraRepo.create(createContractDto);
+
+    // Si se incluye userId en el DTO, lo asignamos al contrato antes de guardarlo
+    if (createContractDto.userId) {
+        newContract.user = { id: createContractDto.userId } as any; // Relación ManyToOne con el usuario
+    }
+
+    // Guardamos el contrato
+    return await this.contraRepo.save(newContract);
 }
+
+
+}
+    // Luego creamos el pago asociado
+    /*const payment = new payments();
+    payment.contract = savedContract;
+    payment.state = 'Pendiente';
+    payment.method = 'stripe'; // O el método de pago que uses por defecto
+    payment.pay_date = new Date(); // Fecha de creación del pago
+    payment.external_transaction_id = `pending_${Date.now()}`; // ID temporal hasta que se procese el pago
+    
+   
+    
+    // Guardamos el pago
+    await this.paymentsRepository.save(payment);*/

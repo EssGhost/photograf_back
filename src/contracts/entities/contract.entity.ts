@@ -46,6 +46,9 @@ export class contracts {
     @Column({ default: true })
     status: boolean;
 
+    @Column('decimal', { precision: 10, scale: 2 })
+    cost: number; // Monto de la transacción
+    
     @OneToOne(() => users, user => user.contract)
     @JoinColumn()
     user: users;
