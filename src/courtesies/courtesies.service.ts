@@ -47,7 +47,8 @@ export class CourtesiesService {
     if (!courtesy) {
       throw new NotFoundException('Cortesia no encontrada');
     }
-    return courtesy;    }
+    return courtesy;    
+  }
 
   async update(id: number, updateCourtesyDto: UpdateCourtesyDto) {
     try {

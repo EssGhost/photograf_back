@@ -6,13 +6,11 @@ import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
 import { UserActivceInterface } from '../auth/common/interfaces/user-active.interface';
 import { Auth } from '../auth/decorators/auth.decorators';
 import { Role } from '../auth/common/enums/role.enum';
-import { contracts } from './entities/contract.entity';
 
 @Controller('contracts')
 export class ContractsController {
   constructor(
     private readonly contractsService: ContractsService,
-
   ) {}
 
   @Post('createContract')
@@ -22,10 +20,16 @@ export class ContractsController {
     return this.contractsService.create(createContractDto, userId);
   }
 
- 
   @Get()
   findAll() {
     return this.contractsService.findAll();
+  }
+
+  @Get('trueFields')
+  @Auth(Role.USER)
+  async getTrueFields(@ActiveUser() user: UserActivceInterface) {
+    const userId = user.id;
+    return this.contractsService.showTrueFields(userId);
   }
 
   @Get(':id')

@@ -14,9 +14,9 @@ export class GroupsController {
   @Post('createGroup')
   @Auth(Role.ADMIN)
   create(@Body() createGroupDto: CreateGroupDto, @ActiveUser() user: UserActivceInterface) {
-    const { courtesyName } = createGroupDto;
+    const { courtesyNames } = createGroupDto;
     const adminId = user.id;
-    return this.groupsService.create(createGroupDto, adminId, courtesyName);
+    return this.groupsService.create(createGroupDto, adminId, courtesyNames);
   }
 
   @Get()
@@ -29,9 +29,9 @@ export class GroupsController {
     return this.groupsService.findOne(+id);
   }
 
-  @Get(':groupCode')
+  @Get('/code/:groupCode')
   findOneByGroupCode(@Param('groupCode') groupCode: string) {
-    return this.groupsService.findOne(+groupCode);
+    return this.groupsService.findOneByGroupCode(groupCode);
   }
 
   @Patch(':id')

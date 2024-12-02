@@ -21,7 +21,7 @@ export class GroupsService {
     private readonly courtesiesByGroupRepository: Repository<courtesies_by_group>,
     private readonly adminService: AdminsService,
   ){}
-    async create(createGroupDto: CreateGroupDto, @ActiveUser() user: any, courtesyName: string) {
+    async create(createGroupDto: CreateGroupDto, @ActiveUser() user: any, courtesyNames: string[]) {
       //creacion y manejo de groupCode
       const MAX_RETRIES = 5;
       let retryCount = 0;
@@ -38,9 +38,6 @@ export class GroupsService {
           const groupCode = `GUP${nextNumber.toString().padStart(6, '0')}`;
           //asignacion automatica de un grupo con un admin
           const activeAdmin = await this.adminService.findOne(user);
-          // if (!activeAdmin) {
-          //   throw new NotFoundException('No se encontró el administrador activo.');
-          // }
           const group = this.groupRepository.create({
             ...createGroupDto,
             groupCode,
@@ -48,9 +45,10 @@ export class GroupsService {
           });
           const savedGroup = await this.groupRepository.save(group); 
           //courtesies
-          let courtesy = await this.courtesyRepository.findOne({
-            where: { name: courtesyName },
-          });
+          for (const courtesyName of courtesyNames) {
+            let courtesy = await this.courtesyRepository.findOne({
+              where: { name: courtesyName },
+            });
           if (!courtesy) {
             courtesy = this.courtesyRepository.create({ name: courtesyName });
             courtesy = await this.courtesyRepository.save(courtesy);
@@ -60,6 +58,7 @@ export class GroupsService {
             courtesy,
           });
           await this.courtesiesByGroupRepository.save(courtesiesByGroup);
+          }
           return savedGroup;
         } catch (error) {
             if (error.code === '23505') { 

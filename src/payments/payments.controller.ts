@@ -12,7 +12,9 @@ import {
   BadRequestException,
   Query,
   NotFoundException,
-  ParseIntPipe
+  ParseIntPipe,
+  UseGuards,
+  Request
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -21,6 +23,7 @@ import { StripeService } from '../stripe/stripe.service';
 import { ConfirmPaymentDto } from './dto/confirm-payment.dto';
 import { PaymentState } from './payment-state.enum';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
 
 @Controller('payments')
 export class PaymentsController {
@@ -235,10 +238,12 @@ async updateStatus(
     }
   }
 
-  @Post('create/:contractId')
-  async createPayment(@Param('contractId') contractId: number, userId:number) {
+  @Post('create')
+  @UseGuards(AuthGuard)
+  async createPayment(@Request() req) {
+    const userId = req.user.id;
     // Crear el pago
-    const payment = await this.paymentsService.createPaymentForContract(contractId, userId);
+    const payment = await this.paymentsService.createPaymentForContract(userId);
     
     // Devolver el clientSecret junto con otros detalles del pago
     return { clientSecret: payment.clientSecret, paymentDetails: payment };

@@ -10,19 +10,20 @@ import { CreateAdminDto } from '../admins/dto/create-admin.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { GroupsService } from 'src/groups/groups.service';
-
-
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
-
     constructor(
         private readonly jwtService : JwtService,
         private readonly adminService : AdminsService,
         private readonly userService : UsersService,
         private readonly credentialsService : CredentialsService,
         private readonly groupService : GroupsService,
+        private readonly mailService: MailService,
         ){}
+
+        private readonly TOKEN_EXPIRATION_TIME = 3600;
 
         /////  admins  /////
         async registerAdmin(createAdminDto : CreateAdminDto){
@@ -106,12 +107,43 @@ export class AuthService {
         return { credential , token };
     }
 
+    //recuperar password
+    async recoverPassword(email: string): Promise<string> {
+        // Paso 1: Buscar al usuario por su correo electrónico
+        const user = await this.userService.findOneByEmail(email);
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+    
+        // Paso 2: Generar una nueva contraseña aleatoria
+        const newPassword = this.userService.generateRandomPassword();
+        const hashedPassword = await bcrypt.hash(newPassword, 10); // Hashear la contraseña.
+    
+        // Paso 3: Actualizar la contraseña en la tabla 'credentials'
+        const credentials = await this.credentialsService.findOne(user.id);
+        if (!credentials) {
+            throw new BadRequestException('Credentials not found');
+        }
+
+        credentials.password = hashedPassword;
+        await this.credentialsService.update(credentials.id, { password: hashedPassword }); // O el método equivalente en tu servicio.
+    
+        // Paso 4: Enviar la nueva contraseña por correo electrónico
+        await this.mailService.sendMail({
+            to: user.email,
+            subject: 'Password Recovery',
+            text: `Your new password is: ${newPassword}`, // Enviar la nueva contraseña en texto plano.
+        });
+    
+        return 'Password has been sent to your email';
+        }
+
 
     //pruebas
     async profile({ email, role }: { email: string; role: string }) {
         return await this.userService.findOneByEmail(email);
     }
-    
+
     async profile2({ email, role }: { email: string; role: string }) {
         return await this.adminService.findOneByEmail(email);
     }

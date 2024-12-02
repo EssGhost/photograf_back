@@ -3,8 +3,8 @@ import { ContractsService } from './contracts.service';
 import { ContractsController } from './contracts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { contracts } from './entities/contract.entity';
-import { UsersModule } from 'src/users/users.module';
-import { payments } from 'src/payments/entities/payment.entity';
+import { UsersModule } from '../users/users.module';
+import { payments } from '../payments/entities/payment.entity';
 
 @Module({
   controllers: [ContractsController],

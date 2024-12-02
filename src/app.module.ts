@@ -17,6 +17,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ConfigModule } from '@nestjs/config';
 import { StripeModule } from './stripe/stripe.module';
 import { PaymentsModule } from './payments/payments.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { PaymentsModule } from './payments/payments.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-      UsersModule,
+    UsersModule,
     AuthModule,
     AdminsModule,
     ContractsModule,
@@ -42,10 +43,12 @@ import { PaymentsModule } from './payments/payments.module';
     PhotosModule,
     CourtesiesByUserModule,
     CourtesiesByGroupModule,
-    CourtesiesModule, CredentialsModule,
+    CourtesiesModule, 
+    CredentialsModule,
     CloudinaryModule,
     StripeModule,
     PaymentsModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],

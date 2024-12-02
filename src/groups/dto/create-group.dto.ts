@@ -1,6 +1,5 @@
 import { Transform, Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MinLength, ValidateNested } from "class-validator";
-import { CreateCourtesyDto } from "../../courtesies/dto/create-courtesy.dto";
+import { IsArray, IsDate, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MinLength } from "class-validator";
 
 export class CreateGroupDto {
     @IsString()
@@ -27,9 +26,8 @@ export class CreateGroupDto {
     @IsDate()
     entrega: Date;
 
-    @IsString()
-    @IsNotEmpty()
-    courtesyName: string; 
+    @IsArray()
+    courtesyNames?: string[]; 
 
     // @IsOptional()
     // @IsNumber()

@@ -256,17 +256,16 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
 
 
  // Crear un pago pendiente para un contrato
- async createPaymentForContract(contractId: number, userId: number) {
+  async createPaymentForContract( userId: number ) {
   // Buscar el contrato por su ID
   const contract = await this.contractsRepository.findOne({
-    where: { id: contractId },
+    where: { user: { id: userId } },
     relations: ['user'],
   });
 
   if (!contract) {
     throw new Error('Contrato no encontrado');
   }
-  const user = contract.user; // Obtener el usuario directamente del contrato
 
   const amount = contract.cost;
 
@@ -278,7 +277,7 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
     amount: Math.round(amount * 100),
     currency: 'mxn',
     payment_method_types: ['card'],
-    description: `Pago del contrato ${contractId}`,
+    description: `Pago del contrato ${contract.id}`,
   });
 
   // Crear el pago en la base de datos
@@ -288,7 +287,7 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
   Payment.pay_date = new Date();
   Payment.external_transaction_id = paymentIntent.id;
   Payment.contract = contract;
-  Payment.user = user; // Asociar el usuario al pago
+  Payment.user = contract.user; // Asociar el usuario al pago
   Payment.clientSecret = paymentIntent.client_secret; // Guardar el clientSecret generado por Stripe
 
   // Guardar el pago en la base de datos
@@ -296,5 +295,4 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
 
   return Payment;
 }
-
 }

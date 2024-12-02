@@ -2,7 +2,6 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
 //service
 import { AuthService } from './auth.service';
-import { ContractsService } from '../contracts/contracts.service';
 
 //dtos
 import { LoginDto } from './dto/login.dto';
@@ -61,6 +60,11 @@ export class AuthController {
     @Post('loginUser')
     login(@Body()loginDto : LoginDto){
         return this.authService.loginUser(loginDto);
+    }
+
+    @Post('recover-password')
+    async recoverPassword(@Body('email') email: string): Promise<string> {
+        return this.authService.recoverPassword(email);
     }
 
     // @Get('profile')
