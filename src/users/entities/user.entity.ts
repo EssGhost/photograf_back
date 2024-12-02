@@ -4,6 +4,7 @@ import { courtesies_by_user } from "../../courtesies_by_user/entities/courtesies
 import { credentials } from "../../credentials/entities/credential.entity";
 import { groups } from "../../groups/entities/group.entity";
 import { payments } from "src/payments/entities/payment.entity";
+import { photos } from "src/photos/entities/photo.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -49,6 +50,12 @@ export class users {
 
     @ManyToOne(() => payments, (pay) => pay.user, { nullable: true })
     pay: payments;
+
+    @OneToMany(() => photos, (photo) => photo.user)
+    photos: photos[];
+
+    @OneToMany(() => photos, (photo) => photo.user)
+    photo: photos[];
 
     @OneToMany(() => courtesies_by_user, courtesy_by_user => courtesy_by_user.user)
     courtesy_by_user: courtesies_by_user[];

@@ -4,10 +4,10 @@ import { Transform, Type } from "class-transformer";
 import { groups } from "src/groups/entities/group.entity";
 
 export class CreatePhotoDto {
-
+ 
     @Transform(({ value }) => value.trim())
     @IsString()
-    @MinLength(3)
+    @MinLength(2)
     name: string;
 
     @IsArray()
