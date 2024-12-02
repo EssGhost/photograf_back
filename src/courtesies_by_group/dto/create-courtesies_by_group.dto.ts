@@ -6,11 +6,11 @@ import { groups } from "src/groups/entities/group.entity";
 export class CreateCourtesiesByGroupDto {
     @IsNumber()
     @IsPositive()
-    @Type(() => Number )
+    @Type(() => groups )
     group: groups;
     
     @IsNumber()
     @IsPositive()
-    @Type(() => Number )
-    courtesies: courtesies;
+    @Type(() => courtesies )
+    courtesie: courtesies;
 }

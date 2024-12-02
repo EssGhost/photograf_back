@@ -9,18 +9,21 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '../admins/dto/create-admin.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-
-
+import { GroupsService } from 'src/groups/groups.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
-
     constructor(
         private readonly jwtService : JwtService,
         private readonly adminService : AdminsService,
         private readonly userService : UsersService,
         private readonly credentialsService : CredentialsService,
+        private readonly groupService : GroupsService,
+        private readonly mailService: MailService,
         ){}
+
+        private readonly TOKEN_EXPIRATION_TIME = 3600;
 
         /////  admins  /////
         async registerAdmin(createAdminDto : CreateAdminDto){
@@ -49,7 +52,7 @@ export class AuthService {
 
         async loginAdmin(loginDto : LoginDto){
             const admin = await this.adminService.findByUsernameWithPassword(loginDto.username);
-            
+            console.log('Admin encontrado en loginAdmin:', admin);
             if (!admin) {
                 throw new UnauthorizedException('Username incorrect');
             }
@@ -59,40 +62,26 @@ export class AuthService {
             if (!isPasswordValid) {
                 throw new UnauthorizedException('Password incorrect');
             }
-
-            const payload = { email: admin.email, role: admin.role };
+            const payload = { id: admin.id, role: admin.role };
             const token = await this.jwtService.signAsync(payload);
 
-            return { username: loginDto.username, token };
+            return { username: loginDto.username, token, payload };
         }
-
 
 
         /////  users  /////
     async registerUser(createUserDto : CreateUserDto){
-        const user = await this.userService.findOneByEmail(createUserDto.email)
-        
+        const user = await this.userService.findOneByEmail(createUserDto.email);
         if (user) {
             throw new BadRequestException('Email already in use');
         }
-
-        const newUser = await this.userService.create({
-            name : createUserDto.name,
-            lastname1 : createUserDto.lastname1,
-            lastname2 : createUserDto.lastname2,
-            email : createUserDto.email,
-            phone : createUserDto.phone,
-            tag : createUserDto.tag,
-            instagram : createUserDto.instagram,
-            facebook : createUserDto.facebook,
-            toga : createUserDto.toga,
-            group : createUserDto.group,
-        });
-
+        const groupEntity = await this.groupService.findOneByGroupCode(createUserDto.group);
+        if (!groupEntity) {
+            throw new BadRequestException(`Group with code ${createUserDto.group} not found`);
+        }
+        const newUser = await this.userService.create(createUserDto);
         const username = `${newUser.name}${newUser.id}`;
-
         const rawPassword = this.userService.generateRandomPassword();
-
         const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
         await this.credentialsService.create({
@@ -100,37 +89,61 @@ export class AuthService {
             password : hashedPassword,
             user : newUser
         });
-
-        return newUser ;
+        return newUser;
     }
 
     async loginUser(loginDto : LoginDto){
-        
         const credential = await this.credentialsService.findOneByUsernameWithUser(loginDto.username);
         //const credential = await this.credentialsService.findOneByUsername(loginDto.username);
-        
         if (!credential) {
             throw new UnauthorizedException('Username incorrect');
         }
-
         const isPasswordValid = await bcrypt.compare(loginDto.password, credential.password);
-        
         if (!isPasswordValid) {
             throw new UnauthorizedException('Password incorrect');
         }
-
-        const payload = { email: credential.user.email, role: credential.user.role };
+        const payload = { id: credential.user.id, role: credential.user.role };
         const token = await this.jwtService.signAsync(payload);
-
         return { credential , token };
     }
+
+    //recuperar password
+    async recoverPassword(email: string): Promise<string> {
+        // Paso 1: Buscar al usuario por su correo electrónico
+        const user = await this.userService.findOneByEmail(email);
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+    
+        // Paso 2: Generar una nueva contraseña aleatoria
+        const newPassword = this.userService.generateRandomPassword();
+        const hashedPassword = await bcrypt.hash(newPassword, 10); // Hashear la contraseña.
+    
+        // Paso 3: Actualizar la contraseña en la tabla 'credentials'
+        const credentials = await this.credentialsService.findOne(user.id);
+        if (!credentials) {
+            throw new BadRequestException('Credentials not found');
+        }
+
+        credentials.password = hashedPassword;
+        await this.credentialsService.update(credentials.id, { password: hashedPassword }); // O el método equivalente en tu servicio.
+    
+        // Paso 4: Enviar la nueva contraseña por correo electrónico
+        await this.mailService.sendMail({
+            to: user.email,
+            subject: 'Password Recovery',
+            text: `Your new password is: ${newPassword}`, // Enviar la nueva contraseña en texto plano.
+        });
+    
+        return 'Password has been sent to your email';
+        }
 
 
     //pruebas
     async profile({ email, role }: { email: string; role: string }) {
         return await this.userService.findOneByEmail(email);
     }
-    
+
     async profile2({ email, role }: { email: string; role: string }) {
         return await this.adminService.findOneByEmail(email);
     }

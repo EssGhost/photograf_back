@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCredentialDto } from './dto/create-credential.dto';
 import { UpdateCredentialDto } from './dto/update-credential.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -38,16 +38,33 @@ export class CredentialsService {
     return `This action returns all credentials`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} credential`;
+  async findOne(id: number) {
+    const credential = await this.credentialRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!credential) {
+      throw new NotFoundException('Credential no encontrada');
+    }
+    return credential;    
   }
 
   findOneByUsername(username: string) {
     return this.credentialRepository.findOneBy({ username });
   }
 
-  update(id: number, updateCredentialDto: UpdateCredentialDto) {
-    return `This action updates a #${id} credential`;
+  async update(id: number, updateCredentialDto: UpdateCredentialDto) {
+    try {
+      const credential = await this.credentialRepository.preload({
+        id,
+        ... updateCredentialDto
+      });
+      await this.credentialRepository.save(credential);
+      return credential;
+    } catch (error) {
+      throw new InternalServerErrorException(error)
+    }
   }
 
   remove(id: number) {

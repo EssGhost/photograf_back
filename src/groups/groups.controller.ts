@@ -2,14 +2,21 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from '../auth/common/interfaces/user-active.interface';
+import { Auth } from '../auth/decorators/auth.decorators';
+import { Role } from '../auth/common/enums/role.enum';
 
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
-  @Post()
-  create(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupsService.create(createGroupDto);
+  @Post('createGroup')
+  @Auth(Role.ADMIN)
+  create(@Body() createGroupDto: CreateGroupDto, @ActiveUser() user: UserActivceInterface) {
+    const { courtesyNames } = createGroupDto;
+    const adminId = user.id;
+    return this.groupsService.create(createGroupDto, adminId, courtesyNames);
   }
 
   @Get()
@@ -17,9 +24,14 @@ export class GroupsController {
     return this.groupsService.findAll();
   }
 
-  @Get(':id/:groupCode')
-  findOne(@Param('id') id: string, @Param('groupCode') groupCode: string) {
-    return this.groupsService.findOne(+id, groupCode);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.groupsService.findOne(+id);
+  }
+
+  @Get('/code/:groupCode')
+  findOneByGroupCode(@Param('groupCode') groupCode: string) {
+    return this.groupsService.findOneByGroupCode(groupCode);
   }
 
   @Patch(':id')

@@ -1,7 +1,6 @@
 import { Transform, Type } from "class-transformer";
-import { IsBoolean, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsNumber, IsPositive, IsDecimal, IsNotEmpty, IsString, Max, Min, MinLength } from "class-validator";
 import { models } from "src/models/entities/model.entity";
-import { users } from "src/users/entities/user.entity";
 
 export class CreateContractDto {
     @Transform(({ value }) => value.trim())
@@ -52,16 +51,11 @@ export class CreateContractDto {
     @MinLength(2)
     dedicated2: string;
 
-    // @IsBoolean()
-    // status: boolean;
+    @IsNumber()
+    @IsPositive()
+    @Type(()=>models)
+    model: models
 
-    // @IsNumber()
-    // @IsPositive()
-    // @Type(() => users )
-    // user: users;
-    
-    // @IsNumber()
-    // @IsPositive()
-    // @Type(() => models )
-    // model: models;
+    @IsNumber()
+    cost: number; // Nota: Puede requerir recibir el valor como string
 }

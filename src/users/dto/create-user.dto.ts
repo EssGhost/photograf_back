@@ -1,5 +1,5 @@
 import { Transform, Type } from "class-transformer";
-import { IsBoolean, IsEmail, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsPositive, IsString, MinLength } from "class-validator";
 import { contracts } from "src/contracts/entities/contract.entity";
 import { credentials } from "src/credentials/entities/credential.entity";
 import { groups } from "src/groups/entities/group.entity";
@@ -47,11 +47,13 @@ export class CreateUserDto {
     //@IsPositive()
     toga: number;
 
-    @IsNumber()
-    @IsPositive()
-    @Type(() => groups )
-    group: groups;
-    
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => groups )
+    // group: groups;
+    @IsString()
+    @IsNotEmpty()
+    group: string;
     // @IsBoolean()
     // status: boolean;
 

@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,7 +26,7 @@ export class AdminsService {
   findByUsernameWithPassword(username: string){
     return this.adminRepository.findOne({
       where: { username },
-      select: [ 'password', 'role' ]
+      select: [ 'id','password', 'role' ]
     })
   }
 
@@ -34,8 +34,12 @@ export class AdminsService {
     return `This action returns all admins`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
+  async findOne(id: number) {  // Verifica el id recibido
+    const admin = await this.adminRepository.findOne({ where: { id } });
+    if (!admin) {
+      throw new NotFoundException(`Administrador con ID ${id} no encontrado.`);
+    }
+    return admin;
   }
 
   findOneByEmail(email: string) {
