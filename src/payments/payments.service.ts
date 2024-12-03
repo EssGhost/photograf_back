@@ -148,7 +148,6 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
   async findOne(@ActiveUser() user: any) {
     try {
       const activeUser=user;
-      console.log(activeUser);
       const payment = await this.paymentsRepository.findOne({
         where: { user: {id: activeUser} },
         relations: ['user', 'contract']
