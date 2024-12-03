@@ -24,7 +24,6 @@ export class ContractsService {
         ...createContractDto,
         user: activeUser,
       });
-      console.log('Valores del contrato a guardar:', createContractDto);
       await this.contractRepository.save(contract);
       return contract;
     } catch (error) {

@@ -32,11 +32,11 @@ export class UsersService {
         where: { groupCode: createUserDto.group },
         relations: ['courtesy_by_group', 'courtesy_by_group.courtesy'],
       });
+      
       if (!groupEntity) {
         throw new BadRequestException(`Group with code ${createUserDto.group} not found`);
       }
-  
-      // Verificar si hay cortesías asociadas al grupo
+
       if (!groupEntity.courtesy_by_group || groupEntity.courtesy_by_group.length === 0) {
         throw new BadRequestException(`No courtesies found for group ${createUserDto.group}`);
       }
@@ -47,14 +47,14 @@ export class UsersService {
       });
       await this.userRepository.save(user);
 
-      const courtesiesByGroup = groupEntity.courtesy_by_group;
-      for (const courtesyByGroup of courtesiesByGroup) {
-        const courtesyByUser = this.courtesiesByUserRepository.create({
-            user: user,
-            courtesy_by_group: courtesyByGroup,
-        });
-        await this.courtesiesByUserRepository.save(courtesyByUser);
-      }
+      // const courtesiesByGroup = groupEntity.courtesy_by_group;
+      // for (const courtesyByGroup of courtesiesByGroup) {
+      //   const courtesyByUser = this.courtesiesByUserRepository.create({
+      //       user: user,
+      //       courtesy_by_group: courtesyByGroup,
+      //   });
+      //   await this.courtesiesByUserRepository.save(courtesyByUser);
+      // }
       return user;
     } catch (error) {
       throw new InternalServerErrorException(error);

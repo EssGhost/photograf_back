@@ -4,10 +4,10 @@ import { courtesies_by_group } from "src/courtesies_by_group/entities/courtesies
 import { users } from "src/users/entities/user.entity";
 
 export class CreateCourtesiesByUserDto {
-    @IsNumber()
-    @IsPositive()
-    @Type(() => users )
-    user: users;
+    // @IsNumber()
+    // @IsPositive()
+    // @Type(() => users )
+    // user: users;
     
     @IsNumber()
     @IsPositive()

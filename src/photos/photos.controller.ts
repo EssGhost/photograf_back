@@ -104,9 +104,18 @@ async uploadPhotosByUser(
     const imageUrls = uploadResults.map((result) => result.secure_url);
 
     // Crear las fotos asociadas al usuario
-    const photo = await this.photosService.createPhotoByUser(userId, imageUrls);
+    const createdPhotos = [];
+    for (const imageUrl of imageUrls) {
+      const photo = await this.photosService.createPhotoByUser(
+        userId,
+        imageUrl,
+      );
+      createdPhotos.push(photo);
+    }
 
-    return photo;
+    return {message: 'Photos uploaded successfully',
+      photos: createdPhotos,
+    };
   } catch (error) {
     console.error('Error al subir fotos por usuario:', error);
     throw new HttpException(
@@ -145,9 +154,18 @@ async uploadPhotosByGroup(
     const imageUrls = uploadResults.map((result) => result.secure_url);
 
     // Crear las fotos asociadas al grupo
-    const photo = await this.photosService.createPhotoByGroup(groupId, imageUrls);
+    const createdPhotos = [];
+    for (const imageUrl of imageUrls) {
+      const photo = await this.photosService.createPhotoByGroup(
+        groupId,
+        imageUrl,
+      );
+      createdPhotos.push(photo);
+    }
 
-    return photo;
+    return {message: 'Photos uploaded successfully',
+      photos: createdPhotos,
+    };
   } catch (error) {
     console.error('Error al subir fotos por grupo:', error);
     throw new HttpException(

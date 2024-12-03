@@ -1,7 +1,6 @@
 
-import { IsNumber, IsPositive, IsString, MinLength, IsArray, IsOptional, IsNotEmpty, } from "class-validator";
+import { IsNumber, IsString, MinLength, IsOptional, IsNotEmpty, } from "class-validator";
 import { Transform, Type } from "class-transformer";
-import { groups } from "src/groups/entities/group.entity";
 
 export class CreatePhotoByGroupDto   {
 
@@ -10,9 +9,9 @@ export class CreatePhotoByGroupDto   {
     @MinLength(2)
     name: string;
 
-    @IsArray()
+    @IsString()
     @IsOptional()
-    image_urls?: string[];
+    image_urls?: string;
 
     @IsNotEmpty()
     @Type(() => Number) // Transformar a número
