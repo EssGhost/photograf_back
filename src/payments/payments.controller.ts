@@ -14,7 +14,8 @@ import {
   NotFoundException,
   ParseIntPipe,
   UseGuards,
-  Request
+  Request,
+  Req
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -128,6 +129,12 @@ export class PaymentsController {
     }
   }
   
+  @Get()
+  @Auth(Role.ADMIN)
+  findAll() {
+    return this.paymentsService.findAll();
+  }
+  
   @Get('has-paid/:userId')
   async hasUserPaid(@Param('userId') userId: number) {
     try {
@@ -182,7 +189,7 @@ async updateStatus(
     }
   }
 
- @Get(':paymentId')
+  @Get('/code/:paymentId')
   async getPaymentDetails(@Param('paymentId') paymentId: number) {
     const paymentDetails = await this.paymentsService.getPaymentDetails(paymentId);
 
@@ -193,18 +200,22 @@ async updateStatus(
     return { clientSecret: paymentDetails.clientSecret, paymentDetails };
   }
 
-  @Get()
+  @Get('/findByUser')
+  @Auth(Role.ADMIN)
   async getPaymentsByUser(@Query('userId') userId: number) {
     if (!userId) {
       throw new BadRequestException('userId is required');
     }
-    return this.paymentsService.findAllByUser(userId);
+    return this.paymentsService.findByUser(userId);
   }
 
-  /*@Get(':id')
-  async getPaymentById(@Param('id') id: number) {
-      return this.paymentsService.findPaymentById(id);
-  }*/
+  @Get('/findByyActiveUser')
+  @Auth(Role.USER)
+  async getMyPayments(@Req() req) {
+  const userId = req.user.id; // Este valor proviene del JWT
+
+  return this.paymentsService.findByActiveUser(userId);
+}
 
   @Patch(':id')
   async update(
@@ -242,7 +253,7 @@ async updateStatus(
   }
 
   @Post('create')
-  @UseGuards(AuthGuard)
+  @Auth(Role.USER)
   async createPayment(@Request() req) {
     const userId = req.user.id;
     // Crear el pago

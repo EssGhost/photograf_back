@@ -3,8 +3,8 @@ import { IsNumber, IsPositive, IsString, MinLength, IsArray, IsOptional, IsNotEm
 import { Transform, Type } from "class-transformer";
 import { groups } from "src/groups/entities/group.entity";
 
-export class CreatePhotoDto {
- 
+export class CreatePhotoByUserDto  {
+
     @Transform(({ value }) => value.trim())
     @IsString()
     @MinLength(2)
@@ -14,10 +14,10 @@ export class CreatePhotoDto {
     @IsOptional()
     image_urls?: string[];
 
-    @IsNotEmpty()
-    @Type(() => Number) // Transformar a número
-    @IsNumber()
-    groupId: number;
+    // @IsNotEmpty()
+    // @Type(() => Number) // Transformar a número
+    // @IsNumber()
+    // groupId: number;
 
     @IsNotEmpty()
     @Type(() => Number) // Transformar a número

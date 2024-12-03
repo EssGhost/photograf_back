@@ -1,5 +1,6 @@
 import { Get, Injectable, InternalServerErrorException, NotFoundException, Param } from '@nestjs/common';
-import { CreatePhotoDto } from './dto/create-photo.dto';
+import { CreatePhotoByUserDto  } from './dto/create-photo-user.dto';
+import { CreatePhotoByGroupDto  } from './dto/create-photo-group.dto';
 import { UpdatePhotoDto } from './dto/update-photo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { photos } from './entities/photo.entity';
@@ -16,27 +17,62 @@ export class PhotosService {
     @InjectRepository(groups) private groupsRepo: Repository<groups>,
   ){}
 
-  async create(createPhotoDto: CreatePhotoDto): Promise<photos> {
-    const { userId, groupId, image_urls } = createPhotoDto;
+  // async create(createPhotoDto: CreatePhotoDto): Promise<photos> {
+  //   const { userId, groupId, image_urls } = createPhotoDto;
   
-    // Buscar usuario y grupo
+  //   // Buscar usuario y grupo
+  //   const user = await this.usersRepo.findOneBy({ id: userId });
+  //   const group = await this.groupsRepo.findOneBy({ id: groupId });
+  
+  //   if (!user || !group) {
+  //     throw new Error('User or Group not found');
+  //   }
+  
+  //   // Crear la entidad de fotos
+  //   const photo = this.photoRepo.create({
+  //     name: photos.name,  // Unimos las URLs si hay varias
+  //     image_urls: image_urls,
+  //     user: user,
+  //     group: group,
+  //   });
+  
+  //   return await this.photoRepo.save(photo);
+  // }
+  async createPhotoByUser(userId: number, imageUrls: string[]): Promise<photos> {
+    // Buscar usuario
     const user = await this.usersRepo.findOneBy({ id: userId });
-    const group = await this.groupsRepo.findOneBy({ id: groupId });
-  
-    if (!user || !group) {
-      throw new Error('User or Group not found');
+    if (!user) {
+      throw new Error('User not found');
     }
   
-    // Crear la entidad de fotos
+    // Crear la entidad de foto
     const photo = this.photoRepo.create({
-      name: photos.name,  // Unimos las URLs si hay varias
-      image_urls: image_urls,
+      name: imageUrls.join(', '), // Unimos las URLs si hay varias
+      image_urls: imageUrls,
       user: user,
+    });
+  
+    return await this.photoRepo.save(photo);
+  }
+
+  async createPhotoByGroup(groupId: number, imageUrls: string[]): Promise<photos> {
+    // Buscar grupo
+    const group = await this.groupsRepo.findOneBy({ id: groupId });
+    if (!group) {
+      throw new Error('Group not found');
+    }
+  
+    // Crear la entidad de foto
+    const photo = this.photoRepo.create({
+      name: imageUrls.join(', '), // Unimos las URLs si hay varias
+      image_urls: imageUrls,
       group: group,
     });
   
     return await this.photoRepo.save(photo);
   }
+  
+  
 
   async getPhotosByUser(@ActiveUser() user: any) {
     try {
