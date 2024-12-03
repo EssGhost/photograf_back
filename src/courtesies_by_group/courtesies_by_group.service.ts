@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { courtesies_by_group } from './entities/courtesies_by_group.entity';
 import { Repository } from 'typeorm';
 import { users } from 'src/users/entities/user.entity';
+import { UserActivceInterface } from 'src/auth/common/interfaces/user-active.interface';
+import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
 
 @Injectable()
 export class CourtesiesByGroupService {
@@ -39,23 +41,24 @@ export class CourtesiesByGroupService {
     return cbg;
   }
   
-  async findByGroupByActiveUser(userId: number) {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
+  async findByGroupByActiveUser(@ActiveUser() user: any) {
+    console.log(user);
+    const uuser = await this.userRepository.findOne({
+      where: { id: user },
       relations: ['group'], // Asegúrate de tener la relación configurada
     });
-  
-    if (!user || !user.group) {
-      throw new InternalServerErrorException(`User with id ${userId} is not associated with any group.`);
+    if (!uuser || !uuser.group) {
+      throw new InternalServerErrorException(`User with id ${user} is not associated with any group.`);
     }
   
-    const groupId = user.group.id;
+    const groupId = uuser.group.id;
   
     // Buscar las cortesías asociadas al grupo
     const cbg = await this.cbgRepository.find({
       where: { group: { id: groupId } },
       relations: ['courtesy'], // Asegúrate de incluir la relación con `courtesy`
       select: {
+        id: true, // Solo queremos el ID de las cortesías_by_group
         courtesy: { name: true }, // Solo queremos el nombre de las cortesías
       },
     });
@@ -64,7 +67,10 @@ export class CourtesiesByGroupService {
       throw new InternalServerErrorException(`No elements found for group id ${groupId}.`);
     }
   
-    return cbg.map(entry => entry.courtesy.name); // Retorna solo los nombres de las cortesías
+    return cbg.map(entry => ({
+      cbgId: entry.id,             
+      courtesyName: entry.courtesy.name,  
+    })); 
   }
 
 
