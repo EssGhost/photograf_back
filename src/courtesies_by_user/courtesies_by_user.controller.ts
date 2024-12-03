@@ -2,14 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CourtesiesByUserService } from './courtesies_by_user.service';
 import { CreateCourtesiesByUserDto } from './dto/create-courtesies_by_user.dto';
 import { UpdateCourtesiesByUserDto } from './dto/update-courtesies_by_user.dto';
+import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from '../auth/common/interfaces/user-active.interface';
+import { Auth } from 'src/auth/decorators/auth.decorators';
+import { Role } from 'src/auth/common/enums/role.enum';
 
 @Controller('courtesies-by-user')
 export class CourtesiesByUserController {
   constructor(private readonly courtesiesByUserService: CourtesiesByUserService) {}
 
-  @Post()
-  create(@Body() createCourtesiesByUserDto: CreateCourtesiesByUserDto) {
-    return this.courtesiesByUserService.create(createCourtesiesByUserDto);
+  @Post('/createCBU')
+  @Auth(Role.USER)
+  create(@Body() createCourtesiesByUserDto: CreateCourtesiesByUserDto, @ActiveUser() user: UserActivceInterface ) {
+    const userId = user.id;
+    return this.courtesiesByUserService.create(createCourtesiesByUserDto, userId);
   }
 
   @Get()
