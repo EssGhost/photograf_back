@@ -8,6 +8,7 @@ import { users } from 'src/users/entities/user.entity';
 import Stripe from 'stripe';
 import { contracts } from 'src/contracts/entities/contract.entity';
 import { PaymentState } from './payment-state.enum';
+import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
 
 @Injectable()
 export class PaymentsService {
@@ -144,16 +145,15 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
     }
   }
 
-  async findOne(id: number) {
+  async findOne(@ActiveUser() user: any) {
     try {
+      const activeUser=user;
+      console.log(activeUser);
       const payment = await this.paymentsRepository.findOne({
-        where: { id },
+        where: { user: {id: activeUser} },
         relations: ['user', 'contract']
       });
       
-      if (!payment) {
-        throw new NotFoundException(`Payment with ID ${id} not found`);
-      }
       return payment;
     } catch (error) {
       if (error instanceof NotFoundException) {

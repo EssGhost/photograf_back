@@ -27,6 +27,8 @@ import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
 import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Auth } from 'src/auth/decorators/auth.decorators';
 import { Role } from 'src/auth/common/enums/role.enum';
+import { ActiveUser } from 'src/auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from 'src/auth/common/interfaces/user-active.interface';
 
 @Controller('payments')
 export class PaymentsController {
@@ -163,31 +165,12 @@ async updateStatus(
 }
 
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
-    try {
-      const payment = await this.paymentsService.findOne(+id);
-      
-      // Si el pago existe y tiene un contrato asociado, incluye el costo
-      if (payment && payment.contract) {
-        return {
-          ...payment,
-          cost: payment.contract.cost
-        };
-      }
-      
-      return payment;
-    } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Pago no encontrado',
-          details: error.message,
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-  }
+  @Get('obtener-pago')
+  @Auth(Role.USER)
+    async findOne(@ActiveUser() user: UserActivceInterface) {
+      const userId = user.id;
+    return this.paymentsService.findOne(userId)
+}
 
   @Get('/code/:paymentId')
   async getPaymentDetails(@Param('paymentId') paymentId: number) {

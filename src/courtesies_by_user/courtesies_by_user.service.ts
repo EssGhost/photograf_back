@@ -20,7 +20,7 @@ export class CourtesiesByUserService {
   async create(createCourtesiesByUserDto: CreateCourtesiesByUserDto, @ActiveUser() user: any) {
     try {
       const activeUser = await this.userService.findOne(user); 
-    const cbu = await this.cbuRepository.create({
+      const cbu = await this.cbuRepository.create({
       ...createCourtesiesByUserDto,
       user: activeUser
     })
