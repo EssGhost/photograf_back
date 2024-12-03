@@ -13,7 +13,7 @@ export class photos {
     @Column('simple-array')
     image_urls: string[];
 
-    @Column()
+    @Column({nullable: true})
     category: string;
 
     @ManyToOne(() => users, (user) => user.photos, { nullable: false })

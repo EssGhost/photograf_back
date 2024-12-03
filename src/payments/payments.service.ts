@@ -55,8 +55,6 @@ export class PaymentsService {
     if (!payment) {
         throw new NotFoundException(`Contract with ID ${contractId} not found for the user.`);
     }
-
-    // Retorna el contrato relacionado con el pago
     return payment.contract;
 }
 
@@ -227,7 +225,7 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
     }
   }
 
-  async findAllByUser(userId: number) {
+  async findByUser(userId: number) {
     try {
       const payments = await this.paymentsRepository.find({
         where: { user: { id: userId } },
@@ -244,6 +242,26 @@ async createPaymentRecord(stripeResponse: Stripe.PaymentIntent, contractId: numb
       }));
     } catch (error) {
       throw new BadRequestException('Error fetching payments: ' + error.message);
+    }
+  }
+
+  async findByActiveUser(userId: number) {
+    try {
+      const payments = await this.paymentsRepository.find({
+        where: { user: { id: userId } },
+        relations: ['contract'], // Relación con contratos
+        order: { pay_date: 'DESC' }, // Orden descendente por fecha de pago
+      });
+
+      return payments.map(payment => ({
+        id: payment.id,
+        state: payment.state,
+        cost: payment.contract.cost,
+        method: payment.method,
+        pay_date: payment.pay_date,
+      }));
+    } catch (error) {
+      throw new BadRequestException('Error al obtener los pagos: ' + error.message);
     }
   }
 

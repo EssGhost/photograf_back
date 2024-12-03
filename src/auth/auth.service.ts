@@ -86,7 +86,7 @@ export class AuthService {
             password : hashedPassword,
             user : newUser
         });
-        return newUser;
+        return {newUser, username, rawPassword};
     }
 
     async loginUser(loginDto : LoginDto){

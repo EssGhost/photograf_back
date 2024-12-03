@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { CourtesiesByGroupService } from './courtesies_by_group.service';
 import { CreateCourtesiesByGroupDto } from './dto/create-courtesies_by_group.dto';
 import { UpdateCourtesiesByGroupDto } from './dto/update-courtesies_by_group.dto';
+import { ActiveUser } from '../auth/common/decorators/active-user.decorator';
+import { UserActivceInterface } from '../auth/common/interfaces/user-active.interface';
 
 @Controller('courtesies-by-group')
 export class CourtesiesByGroupController {
@@ -15,6 +17,12 @@ export class CourtesiesByGroupController {
   @Get()
   findAll() {
     return this.courtesiesByGroupService.findAll();
+  }
+  
+  @Get('findCourtesiesByGroup')
+  async findByGroup(@ActiveUser() user: UserActivceInterface) {
+    const userId = user.id// Extraer el ID del usuario del token
+    return this.courtesiesByGroupService.findByGroupByActiveUser(userId); // Asegúrate de que `user.id` esté disponible
   }
 
   @Get(':id')
