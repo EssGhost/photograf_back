@@ -187,7 +187,8 @@ async uploadPhotosByGroup(
   @Get('by-group')
   @Auth(Role.USER)
     async getPhotosByGroup(@ActiveUser() user: UserActivceInterface) {
-    return this.photosService.getPhotosByGroup(user);
+    const userId = user.id; // Extraer userId del token
+    return this.photosService.getPhotosByGroup(userId);
   }
 
 @Patch(':id/category')

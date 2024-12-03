@@ -52,9 +52,6 @@ export class users {
     pay: payments;
 
     @OneToMany(() => photos, (photo) => photo.user)
-    photos: photos[];
-
-    @OneToMany(() => photos, (photo) => photo.user)
     photo: photos[];
 
     @OneToMany(() => courtesies_by_user, courtesy_by_user => courtesy_by_user.user)

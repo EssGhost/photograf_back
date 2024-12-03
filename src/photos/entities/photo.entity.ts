@@ -16,7 +16,7 @@ export class photos {
     @Column({nullable: true})
     category: string;
 
-    @ManyToOne(() => users, (user) => user.photos, { nullable: true })
+    @ManyToOne(() => users, (user) => user.photo, { nullable: true })
     user: users;
 
     @ManyToOne(() => groups, (group) => group.photo, { nullable: true })
