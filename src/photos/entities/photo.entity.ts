@@ -10,8 +10,8 @@ export class photos {
     @Column()
     name: string;
 
-    @Column('simple-array')
-    image_urls: string[];
+    @Column()
+    image_urls: string;
 
     @Column({nullable: true})
     category: string;

@@ -38,7 +38,7 @@ export class PhotosService {
   
   //   return await this.photoRepo.save(photo);
   // }
-  async createPhotoByUser(userId: number, imageUrls: string[]): Promise<photos> {
+  async createPhotoByUser(userId: number, imageUrls: string): Promise<photos> {
     // Buscar usuario
     const user = await this.usersRepo.findOneBy({ id: userId });
     if (!user) {
@@ -47,7 +47,7 @@ export class PhotosService {
   
     // Crear la entidad de foto
     const photo = this.photoRepo.create({
-      name: imageUrls.join(', '), // Unimos las URLs si hay varias
+      name: imageUrls, // Unimos las URLs si hay varias
       image_urls: imageUrls,
       user: user,
     });
@@ -55,7 +55,7 @@ export class PhotosService {
     return await this.photoRepo.save(photo);
   }
 
-  async createPhotoByGroup(groupId: number, imageUrls: string[]): Promise<photos> {
+  async createPhotoByGroup(groupId: number, imageUrls: string): Promise<photos> {
     // Buscar grupo
     const group = await this.groupsRepo.findOneBy({ id: groupId });
     if (!group) {
@@ -64,7 +64,7 @@ export class PhotosService {
   
     // Crear la entidad de foto
     const photo = this.photoRepo.create({
-      name: imageUrls.join(', '), // Unimos las URLs si hay varias
+      name: imageUrls, // Unimos las URLs si hay varias
       image_urls: imageUrls,
       group: group,
     });
